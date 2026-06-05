@@ -4,6 +4,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 public class TraineeResponse
 {
+     public int Id { get; set; }
     [Required(ErrorMessage = "FirstName is required.")]
     [StringLength(50, ErrorMessage = "FirstName cannot exceed 50 characters.")]
     public string FirstName { get; set; } = "";

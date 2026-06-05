@@ -36,4 +36,28 @@ public class TraineeController : ControllerBase
         TraineeResponse traineeResponse = _traineeService.Create(trainee);
         return Ok(traineeResponse);
     }
+
+    [HttpPut("{Id:int}")]
+
+    public IActionResult Update(int Id,UpdateTraineeRequest updateTraineeRequest)
+    {
+        TraineeResponse traineeResponse = _traineeService.Update(Id,updateTraineeRequest);
+        if(traineeResponse == null)
+        {
+            return NotFound();
+        }
+        else
+        {
+            return Ok(traineeResponse);
+        }
+        
+    }
+
+    [HttpDelete("{Id:int}")]
+
+    public IActionResult Delete(int Id)
+    {
+        bool traineeResponse = _traineeService.Delete(Id);
+        return traineeResponse == false? NotFound():StatusCode(204);      
+    }
 }

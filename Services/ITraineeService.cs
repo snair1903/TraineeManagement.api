@@ -7,7 +7,7 @@ namespace TraineeManagement.api.Services
         public List<TraineeResponse> GetAll();
         public TraineeResponse? GetById(int Id);
         public TraineeResponse Create(CreateTraineeRequest trainee);
-        //Task<bool> UpdateAsync(int Id,Trainee trainee);
-        //Task<bool> DeleteAsync(int Id);
+        public TraineeResponse Update(int Id,UpdateTraineeRequest trainee);
+        public bool Delete(int Id);
     }
 }

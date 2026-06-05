@@ -3,6 +3,7 @@ namespace TraineeManagement.api.Models;
 using System.ComponentModel.DataAnnotations;
 public class Trainee
 {
+    
     public int Id { get; set; }
     [Required(ErrorMessage = "FirstName is required.")]
     [StringLength(50, ErrorMessage = "FirstName cannot exceed 50 characters.")]
