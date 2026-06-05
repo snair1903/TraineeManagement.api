@@ -7,6 +7,6 @@ public class Trainee
     public string? Email { get; set; }
     public string? TechStack { get; set; }
     public string? Status { get; set; }
-    public string? CreatedDate { get; set; }
-    public string?  UpdatedDate { get; set; }
+    public DateTime? CreatedDate { get; set; }
+    public DateTime?  UpdatedDate { get; set; }
 }

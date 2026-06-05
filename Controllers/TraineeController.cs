@@ -3,29 +3,44 @@ using TraineeManagement.api.Models;
 namespace TraineeManagement.api.Controllers;
 
 [ApiController]
-[Route("/api/[controller]")]
+[Route("/api/trainee")]
 public class TraineeController : ControllerBase
 {
-    private static List<Trainee> trainees = new List<Trainee>{};
-    
-    [HttpGet]
-    public List<Trainee> GetAll()
+    private static List<Trainee> trainees = new List<Trainee>
     {
-        return trainees;
-    }
-    
-    [HttpGet("{Id}")]
+        new Trainee{
+            Id= 0,
+            FirstName= "string",
+            LastName= "string",
+            Email= "string",
+            TechStack= "string",
+            Status= "string",
+            CreatedDate= DateTime.Now,
+            UpdatedDate= DateTime.Now
+        }
+    };
 
-    public Trainee GetbyId(int Id)
+    [HttpGet]
+    public IActionResult GetAll()
     {
-        return trainees.FirstOrDefault(t=>t.Id==Id);
+        return Ok(trainees);
+    }
+
+    [HttpGet("{Id:int}")]
+
+    public IActionResult GetbyId(int Id)
+    {
+        Trainee trainee = trainees.FirstOrDefault(t => t.Id == Id);
+        return Ok(trainee);
     }
 
     [HttpPost]
-    public Trainee Create(Trainee trainee)
+    public IActionResult Create(Trainee trainee)
     {
-        trainee.Id = trainees.Max(t =>t.Id)+1;
+        trainee.Id = trainees.Max(t => t.Id) + 1;
+        trainee.CreatedDate = DateTime.Now;
+        trainee.UpdatedDate = DateTime.Now;
         trainees.Add(trainee);
-        return trainee;
+        return Ok(trainee);
     }
 }
