@@ -66,6 +66,14 @@ public class TraineeController : ControllerBase
         trainee.CreatedDate = DateTime.Now;
         trainee.UpdatedDate = DateTime.Now;
         trainees.Add(trainee);
+        CreateTraineeRequest Ctrainee = new CreateTraineeRequest
+        {
+            FirstName = trainee.FirstName,
+            LastName = trainee.LastName,
+            Email = trainee.Email,
+            Status = trainee.Status,
+            TechStack = trainee.TechStack
+        };
         return Ok(trainee);
     }
 }
