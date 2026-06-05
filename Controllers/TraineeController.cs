@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TraineeManagement.api.Models;
+using TraineeManagement.api.DTOs;
 namespace TraineeManagement.api.Controllers;
 
 [ApiController]
@@ -23,15 +24,39 @@ public class TraineeController : ControllerBase
     [HttpGet]
     public IActionResult GetAll()
     {
-        return Ok(trainees);
+        var traineesDto = trainees.Select(t => new TraineeResponse
+        {
+            FirstName = t.FirstName,
+            LastName = t.LastName,
+            CreatedDate = t.CreatedDate,
+            UpdatedDate = t.UpdatedDate,
+            Status = t.Status,
+            Email = t.Email,
+            TechStack = t.TechStack
+        });
+        return Ok(traineesDto);
     }
 
     [HttpGet("{Id:int}")]
 
     public IActionResult GetbyId(int Id)
     {
-        Trainee trainee = trainees.FirstOrDefault(t => t.Id == Id);
-        return Ok(trainee);
+        var trainee = trainees.FirstOrDefault(t => t.Id == Id);
+        if(trainee == null)
+        {
+            return NotFound();
+        }
+        var traineeDto = new TraineeResponse
+        {
+            FirstName = trainee.FirstName,
+            LastName = trainee.LastName,
+            TechStack = trainee.TechStack,
+            Email = trainee.Email,
+            CreatedDate = trainee.CreatedDate,
+            UpdatedDate = trainee.UpdatedDate,
+            Status = trainee.Status,
+        };
+        return Ok(traineeDto);
     }
 
     [HttpPost]

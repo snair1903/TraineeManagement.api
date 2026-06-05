@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TraineeManagement.api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d6b8f8d0bfa702491b8752c4ba2512d49a5cc961")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+536b90f36764e732d51a6a569bd3fcecc22214ea")]
 [assembly: System.Reflection.AssemblyProductAttribute("TraineeManagement.api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TraineeManagement.api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
