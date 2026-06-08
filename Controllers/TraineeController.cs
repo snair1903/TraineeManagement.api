@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using TraineeManagement.api.Models;
 using TraineeManagement.api.DTOs;
 namespace TraineeManagement.api.Controllers;
+
+using Microsoft.AspNetCore.Http.HttpResults;
 using TraineeManagement.api.Services;
 
 [ApiController]
@@ -18,46 +20,101 @@ public class TraineeController : ControllerBase
     [HttpGet]
     public IActionResult GetAll()
     {
-        var res = _traineeService.GetAll();
-        return Ok(res);
+        try
+        {
+            var res = _traineeService.GetAll();
+            return Ok(res);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                error = "Internal Server Error",
+                details = ex.Message
+            });
+        }
     }
 
     [HttpGet("{Id:int}")]
 
     public IActionResult GetbyId(int Id)
     {
-        TraineeResponse? traineeResponse = _traineeService.GetById(Id);
-        return traineeResponse == null? NotFound():Ok(traineeResponse);
+        try
+        {
+            TraineeResponse? traineeResponse = _traineeService.GetById(Id);
+            return traineeResponse == null ? NotFound() : Ok(traineeResponse);
+         }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                error = "Internal Server Error",
+                details = ex.Message
+            });
+        }
     }
 
     [HttpPost]
     public IActionResult Create(CreateTraineeRequest trainee)
     {
-        TraineeResponse traineeResponse = _traineeService.Create(trainee);
-        return Ok(traineeResponse);
+        try
+        {
+            TraineeResponse traineeResponse = _traineeService.Create(trainee);
+            return Ok(traineeResponse);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                error = "Internal Server Error",
+                details = ex.Message
+            });
+        }
     }
 
     [HttpPut("{Id:int}")]
 
-    public IActionResult Update(int Id,UpdateTraineeRequest updateTraineeRequest)
+    public IActionResult Update(int Id, UpdateTraineeRequest updateTraineeRequest)
     {
-        TraineeResponse traineeResponse = _traineeService.Update(Id,updateTraineeRequest);
-        if(traineeResponse == null)
+        try
         {
-            return NotFound();
+            TraineeResponse traineeResponse = _traineeService.Update(Id, updateTraineeRequest);
+            if (traineeResponse == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(traineeResponse);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            return Ok(traineeResponse);
+            return StatusCode(500, new
+            {
+                error = "Internal Server Error",
+                details = ex.Message
+            });
         }
-        
+
     }
 
     [HttpDelete("{Id:int}")]
 
     public IActionResult Delete(int Id)
     {
-        bool traineeResponse = _traineeService.Delete(Id);
-        return traineeResponse == false? NotFound():StatusCode(204);      
+        try
+        {
+            bool traineeResponse = _traineeService.Delete(Id);
+            return traineeResponse == false ? NotFound() : StatusCode(204);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                error = "Internal Server Error",
+                details = ex.Message
+            });
+        }
     }
 }
