@@ -36,4 +36,6 @@ public class TraineeResponse
         CreatedDate = trainee.CreatedDate;
         UpdatedDate = trainee.UpdatedDate;
     }
+
+    public TraineeResponse(){}
 }

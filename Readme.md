@@ -1,54 +1,202 @@
-# Trainee Management API DAY 2 Progress Reporting
+# Trainee Management API
 
-## Overview
-Implemented DTOs for models, Added Security Policies to Models and DTOs, Created Interfaces and Services and implemented Apis like GetAll, GetById, Update, Delete with Service.
+## Technology Used 
 
-### Day 2 Goal
-- Improve the API design using DTOs, validation, service layer, dependency injection, and proper HTTP status 
-codes.
-- Introduce clean code structure without adding real database complexity
+## How to Run 
+1. Clone Github Repository
+`https://github.com/snair1903/TraineeManagement.api.git`
 
-## Task 2.1: Add DTOs
+2. Navigate to Folder 
+`cd TraineeManagement.api`
 
-### Created the following DTOs:
-- CreateTraineeRequest
-- UpdateTraineeRequest
-- TraineeResponse
+3. Start the project
+`dotnet run `
 
-### Purpose:
-- CreateTraineeRequest: used when adding a trainee 
-- UpdateTraineeRequest: used when updating a trainee 
-- TraineeResponse: used when returning trainee detail
+## API List 
 
-## Task 2.2: Add Validation
-### Added validation rules:
-- FirstName → Required, maximum 50 characters
-- LastName → Required, maximum 50 characters
-- Email → Required, must be in valid email format
-- TechStack → Required
-- Status → Required, must be valid
+|Methods|Endpoints|
+|:---|:---|
+|GET|/api/health|
+|GET|/api/trainee|
+|GET|/api/trainee/{Id}|
+|POST|/api/trainee|
+|PUT|/api/trainee/{Id}|
+|DELETE|/api/trainee/{Id}|
+|GET|/api/trainee?search={query}|
 
-## Task 2.3: Add Add Service Layer
-### Created:
-- ITraineeService
-- TraineeService
+## Sample Request JSON and Response JSON 
 
-## Task 2.4: Add PUT API
-### Create:
-- PUT /api/trainees/{id}
+1. `GET` `/api/health`
+Request:
+```bash
+curl -X 'GET' \
+  'https://localhost:7206/api/health' \
+  -H 'accept: */*'
+  ```
 
-### Purpose:
-- Update trainee details.
+  Response:
+  ```bash
+  {
+  "status": "running",
+  "application": "Trainee Management API",
+  "timestamp": "2026-06-08T12:56:40"
+}
+  ```
 
-### Expected behavior:
-- Valid trainee ID → 200 OK
-- Invalid trainee ID → 404 Not Found
-- Invalid request → 400 Bad Request
+  2. `GET` `/api/trainee`
+Request:
+```bash
+curl -X 'GET' \
+  'https://localhost:7206/api/trainee' \
+  -H 'accept: */*'
+  ```
 
-## Task 2.5: Add DELETE API
-### Create:
-- DELETE /api/trainees/{id}
+  Response:
+  ```bash
+  [
+  {
+    "id": 1,
+    "firstName": "string",
+    "lastName": "string",
+    "email": "string@gmail",
+    "techStack": "string",
+    "status": "",
+    "createdDate": "2026-06-08T16:10:31.6517283+05:30",
+    "updatedDate": "2026-06-08T16:10:31.6517736+05:30"
+  },
+  {
+    "id": 2,
+    "firstName": "string6",
+    "lastName": "string",
+    "email": "string@gmail",
+    "techStack": "string",
+    "status": "Active",
+    "createdDate": "2026-06-08T16:10:35.2235989+05:30",
+    "updatedDate": "2026-06-08T16:14:10.8199147+05:30"
+  },
+  {
+    "id": 3,
+    "firstName": "string1",
+    "lastName": "string",
+    "email": "string@gmail",
+    "techStack": "string",
+    "status": "",
+    "createdDate": "2026-06-08T16:10:45.5810991+05:30",
+    "updatedDate": "2026-06-08T16:10:45.5810992+05:30"
+  }
+]
+  ```
 
-### Expected behavior:
-- Valid trainee ID → 204 No Content
-- Invalid trainee ID → 404 Not Found
+  3. `POST` `/api/trainee`
+Request:
+```bash
+curl -X 'POST' \
+  'https://localhost:7206/api/trainee' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "firstName": "string2",
+  "lastName": "string",
+  "email": "string@gmail",
+  "techStack": "string",
+  "status": "Active"
+}'
+  ```
+
+  Response:
+  ```bash
+  {
+  "status": "running",
+  "application": "Trainee Management API",
+  "timestamp": "2026-06-08T12:56:40"
+}
+  ```
+
+  4. `GET` `/api/trainee/{Id}`
+Request:
+```bash
+curl -X 'GET' \
+  'https://localhost:7206/api/trainee/2' \
+  -H 'accept: */*'
+  ```
+
+  Response:
+  ```bash
+  {
+  "id": 2,
+  "firstName": "string6",
+  "lastName": "string",
+  "email": "string@gmail",
+  "techStack": "string",
+  "status": "Active",
+  "createdDate": "2026-06-08T16:10:35.2235989+05:30",
+  "updatedDate": "2026-06-08T16:14:10.8199147+05:30"
+}
+  ```
+
+  5. `PUT` `/api/trainee/{Id}`
+Request:
+```bash
+curl -X 'PUT' \
+  'https://localhost:7206/api/trainee/2' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "firstName": "string6",
+  "lastName": "string",
+  "email": "string@gmail",
+  "techStack": "string",
+  "status": "Active"
+}'
+  ```
+
+  Response:
+  ```bash
+  {
+  "id": 2,
+  "firstName": "string6",
+  "lastName": "string",
+  "email": "string@gmail",
+  "techStack": "string",
+  "status": "Active",
+  "createdDate": "2026-06-08T16:10:35.2235989+05:30",
+  "updatedDate": "2026-06-08T16:14:10.8199147+05:30"
+}
+  ```
+
+  6. `DELETE` `/api/trainee/{Id}`
+Request:
+```bash
+    curl -X 'DELETE' \
+  'https://localhost:7206/api/trainee/4' \
+  -H 'accept: */*'
+  ```
+  Response:
+  status code:204.
+
+  7. `GET` `api/trainee?search={query}`
+  Request:
+  ```bash
+  curl -X 'GET' \
+  'https://localhost:7206/api/trainee?search=string6' \
+  -H 'accept: */*'
+  ```
+  Response:
+  ```bash
+  [
+  {
+    "id": 3,
+    "firstName": "string6",
+    "lastName": "string",
+    "email": "string@gmail",
+    "techStack": "string",
+    "status": "",
+    "createdDate": "2026-06-08T18:55:39.3565506+05:30",
+    "updatedDate": "2026-06-08T18:55:39.3565508+05:30"
+  }
+]
+  ```
+
+## Known Limitations 
+- In memory db (Not persistant)
+- No authentication Mechanism
