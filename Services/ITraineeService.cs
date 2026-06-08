@@ -4,10 +4,10 @@ namespace TraineeManagement.api.Services
 {
     public interface ITraineeService
     {
-        public List<TraineeResponse> GetAll();
-        public TraineeResponse? GetById(int Id);
-        public TraineeResponse Create(CreateTraineeRequest trainee);
-        public TraineeResponse Update(int Id,UpdateTraineeRequest trainee);
-        public bool Delete(int Id);
+        public Task<List<TraineeResponse>> GetAll(string? search);
+        public Task<TraineeResponse?> GetById(int Id);
+        public Task<TraineeResponse> Create(CreateTraineeRequest trainee);
+        public Task<TraineeResponse> Update(int Id,UpdateTraineeRequest trainee);
+        public Task<bool> Delete(int Id);
     }
 }

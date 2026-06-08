@@ -3,6 +3,7 @@ using TraineeManagement.api.Models;
 using TraineeManagement.api.DTOs;
 namespace TraineeManagement.api.Controllers;
 
+using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Http.HttpResults;
 using TraineeManagement.api.Services;
 
@@ -18,11 +19,11 @@ public class TraineeController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] string? search)
     {
         try
         {
-            var res = _traineeService.GetAll();
+            var res =await _traineeService.GetAll(search);
             return Ok(res);
         }
         catch (Exception ex)
@@ -37,11 +38,11 @@ public class TraineeController : ControllerBase
 
     [HttpGet("{Id:int}")]
 
-    public IActionResult GetbyId(int Id)
+    public async Task<IActionResult> GetbyId(int Id)
     {
         try
         {
-            TraineeResponse? traineeResponse = _traineeService.GetById(Id);
+            TraineeResponse? traineeResponse = await _traineeService.GetById(Id);
             return traineeResponse == null ? NotFound() : Ok(traineeResponse);
          }
         catch (Exception ex)
@@ -55,11 +56,11 @@ public class TraineeController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Create(CreateTraineeRequest trainee)
+    public async Task<IActionResult> Create(CreateTraineeRequest trainee)
     {
         try
         {
-            TraineeResponse traineeResponse = _traineeService.Create(trainee);
+            TraineeResponse traineeResponse = await _traineeService.Create(trainee);
             return Ok(traineeResponse);
         }
         catch (Exception ex)
@@ -74,11 +75,11 @@ public class TraineeController : ControllerBase
 
     [HttpPut("{Id:int}")]
 
-    public IActionResult Update(int Id, UpdateTraineeRequest updateTraineeRequest)
+    public async Task<IActionResult> Update(int Id, UpdateTraineeRequest updateTraineeRequest)
     {
         try
         {
-            TraineeResponse traineeResponse = _traineeService.Update(Id, updateTraineeRequest);
+            TraineeResponse traineeResponse = await _traineeService.Update(Id, updateTraineeRequest);
             if (traineeResponse == null)
             {
                 return NotFound();
@@ -101,11 +102,11 @@ public class TraineeController : ControllerBase
 
     [HttpDelete("{Id:int}")]
 
-    public IActionResult Delete(int Id)
+    public async  Task<IActionResult> Delete(int Id)
     {
         try
         {
-            bool traineeResponse = _traineeService.Delete(Id);
+            bool traineeResponse = await _traineeService.Delete(Id);
             return traineeResponse == false ? NotFound() : StatusCode(204);
         }
         catch (Exception ex)
