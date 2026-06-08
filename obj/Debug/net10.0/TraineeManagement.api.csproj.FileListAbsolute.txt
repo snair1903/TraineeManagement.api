@@ -1,8 +1,0 @@
-C:\Users\shreyas.nair\Documents\Training\Task2\Weather\TraineeManagement.api\obj\Debug\net10.0\TraineeManagement.api.csproj.AssemblyReference.cache
-C:\Users\shreyas.nair\Documents\Training\Task2\Weather\TraineeManagement.api\obj\Debug\net10.0\rpswa.dswa.cache.json
-C:\Users\shreyas.nair\Documents\Training\Task2\Weather\TraineeManagement.api\obj\Debug\net10.0\TraineeManagement.api.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\shreyas.nair\Documents\Training\Task2\Weather\TraineeManagement.api\obj\Debug\net10.0\TraineeManagement.api.AssemblyInfoInputs.cache
-C:\Users\shreyas.nair\Documents\Training\Task2\Weather\TraineeManagement.api\obj\Debug\net10.0\TraineeManagement.api.AssemblyInfo.cs
-C:\Users\shreyas.nair\Documents\Training\Task2\Weather\TraineeManagement.api\obj\Debug\net10.0\TraineeManagement.api.csproj.CoreCompileInputs.cache
-C:\Users\shreyas.nair\Documents\Training\Task2\Weather\TraineeManagement.api\obj\Debug\net10.0\TraineeManagement.api.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\shreyas.nair\Documents\Training\Task2\Weather\TraineeManagement.api\obj\Debug\net10.0\TraineeManagement.api.MvcApplicationPartsAssemblyInfo.cache

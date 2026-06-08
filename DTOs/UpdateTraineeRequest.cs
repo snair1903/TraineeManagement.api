@@ -1,10 +1,9 @@
-namespace TraineeManagement.api.Models;
+namespace TraineeManagement.api.DTOs;
 
+using System;
 using System.ComponentModel.DataAnnotations;
-public class Trainee
+public class UpdateTraineeRequest
 {
-    
-    public int Id { get; set; }
     [Required(ErrorMessage = "FirstName is required.")]
     [StringLength(50, ErrorMessage = "FirstName cannot exceed 50 characters.")]
     public string FirstName { get; set; } = "";
@@ -20,6 +19,5 @@ public class Trainee
     [Required]
     [AllowedValues(["Active", "InActive", "Complete"], ErrorMessage = "Must be valid Status")]
     public string Status { get; set; } = "";
-    public DateTime? CreatedDate { get; set; }
-    public DateTime? UpdatedDate { get; set; }
+    public DateTime UpdatedDate { get; set; } = DateTime.Now;
 }
