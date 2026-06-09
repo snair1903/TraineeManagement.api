@@ -2,6 +2,7 @@ namespace TraineeManagement.api.DTOs;
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using TraineeManagement.api.Models;
 public class UpdateTraineeRequest
 {
     [Required(ErrorMessage = "FirstName is required.")]
@@ -16,8 +17,8 @@ public class UpdateTraineeRequest
     public string Email { get; set; } = "";
     [Required]
     public string TechStack { get; set; } = "";
-    [Required]
-    [AllowedValues(["Active", "InActive", "Complete"], ErrorMessage = "Must be valid Status")]
-    public string Status { get; set; } = "";
+    // [Required]
+    // [AllowedValues(["Active", "InActive", "Complete"], ErrorMessage = "Must be valid Status")]
+    public TraineeStatus Status { get; set; } 
     public DateTime UpdatedDate { get; set; } = DateTime.Now;
 }

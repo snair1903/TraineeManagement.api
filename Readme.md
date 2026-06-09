@@ -9,7 +9,23 @@
 2. Navigate to Folder 
 `cd TraineeManagement.api`
 
-3. Start the project
+3. Install Dependencies
+`dotnet restore`
+
+4. Change Connection String
+```json
+  "ConnectionStrings": {
+    "DefaultConnection":
+    "server=localhost;database=TraineeManagementDb;user=root;password=Snorlax@1010;"
+
+  }
+```
+
+5. Database update
+`dotnet ef database update`
+
+
+6. Start the project
 `dotnet run `
 
 ## API List 
@@ -198,5 +214,4 @@ Request:
   ```
 
 ## Known Limitations 
-- In memory db (Not persistant)
 - No authentication Mechanism
