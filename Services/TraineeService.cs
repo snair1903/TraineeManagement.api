@@ -3,13 +3,14 @@ using TraineeManagement.api.Models;
 using TraineeManagement.api.DTOs;
 using TraineeManagement.api.Services;
 using Microsoft.EntityFrameworkCore;
+using TraineeManagement.api.Data;
 
 
 public class TraineeService : ITraineeService
 {
-    private readonly TraineeContext _traineeContext;
+    private readonly AppDbContext _traineeContext;
 
-    public TraineeService(TraineeContext context)
+    public TraineeService(AppDbContext context)
     {
         _traineeContext = context;
     }
