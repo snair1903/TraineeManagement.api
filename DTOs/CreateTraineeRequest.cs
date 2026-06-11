@@ -3,6 +3,7 @@ namespace TraineeManagement.api.DTOs;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Xml;
+using TraineeManagement.api.Models;
 
 public class CreateTraineeRequest
 { 
@@ -18,7 +19,7 @@ public class CreateTraineeRequest
     public string Email { get; set; } = "";
     [Required]
     public string TechStack { get; set; } = "";
-    [Required]
-    [AllowedValues(["Active", "InActive", "Complete"], ErrorMessage = "Must be valid Status")]
-    public string Status { get; set; } = "";
+    // [Required]
+    // [AllowedValues(["Active", "InActive", "Complete"], ErrorMessage = "Must be valid Status")]
+    public TraineeStatus Status { get; set; } 
 }

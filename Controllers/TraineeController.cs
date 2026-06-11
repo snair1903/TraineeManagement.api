@@ -1,10 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using TraineeManagement.api.Models;
 using TraineeManagement.api.DTOs;
 namespace TraineeManagement.api.Controllers;
-
-using System.Runtime.CompilerServices;
-using Microsoft.AspNetCore.Http.HttpResults;
 using TraineeManagement.api.Services;
 
 [ApiController]
@@ -79,7 +75,7 @@ public class TraineeController : ControllerBase
     {
         try
         {
-            TraineeResponse traineeResponse = await _traineeService.Update(Id, updateTraineeRequest);
+            TraineeResponse? traineeResponse = await _traineeService.Update(Id, updateTraineeRequest);
             if (traineeResponse == null)
             {
                 return NotFound();
