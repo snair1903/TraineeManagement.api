@@ -11,7 +11,7 @@ using TraineeManagement.api.Data;
 namespace TraineeManagement.api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260610080658_InitialCreate")]
+    [Migration("20260611060130_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
