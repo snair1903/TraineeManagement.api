@@ -7,16 +7,13 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace TraineeManagement.api.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class MentorCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterDatabase()
-                .Annotation("MySQL:Charset", "utf8mb4");
-
             migrationBuilder.CreateTable(
-                name: "Trainees",
+                name: "Mentors",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -24,14 +21,14 @@ namespace TraineeManagement.api.Migrations
                     FirstName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
                     Email = table.Column<string>(type: "longtext", nullable: false),
-                    TechStack = table.Column<string>(type: "longtext", nullable: false),
+                    Expertise = table.Column<string>(type: "longtext", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Trainees", x => x.Id);
+                    table.PrimaryKey("PK_Mentors", x => x.Id);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
         }
@@ -40,7 +37,7 @@ namespace TraineeManagement.api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Trainees");
+                name: "Mentors");
         }
     }
 }

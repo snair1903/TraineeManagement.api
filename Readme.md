@@ -213,5 +213,3 @@ Request:
 ]
   ```
 
-## Known Limitations 
-- No authentication Mechanism

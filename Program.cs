@@ -1,7 +1,11 @@
 using TraineeManagement.api.Services;
 using Microsoft.EntityFrameworkCore;
-using TraineeManagement.api.Models;
 using System.Text.Json.Serialization;
+using TraineeManagement.api.Data;
+using Microsoft.OpenApi;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +15,11 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 // Add services to the container.
 
 builder.Services.AddScoped<ITraineeService, TraineeService>();
+builder.Services.AddScoped<IMentorService, MentorService>();
+builder.Services.AddScoped<ILearningTaskService, LearningTaskService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
-builder.Services.AddDbContext<TraineeContext>(options=>options.UseMySQL(
+builder.Services.AddDbContext<AppDbContext>(options => options.UseMySQL(
     connectionString
 ));
 
@@ -21,23 +28,75 @@ builder.Services.AddControllers()
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidAudience = jwtSettings["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(secretKey)
+        };
+    });
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "JWT Authorization header using the Bearer scheme."
+    });
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("bearer", document)] = []
+    });
+});
+
+
+builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("MyAllowSpecificOrigins",
+            builder => builder.WithOrigins("http://localhost:3000", "http://localhost:5173/")
+                              .AllowAnyMethod()
+                              .AllowAnyHeader());
+    });
+
+
+
+
+builder.Services.AddLogging(logging =>
+{
+    logging.ClearProviders();
+    logging.AddConsole(); 
+    logging.SetMinimumLevel(LogLevel.Trace);
+});
+builder.Services.AddScoped<JwtService>();
+
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-     app.UseSwaggerUi(options =>
-    {
-        options.DocumentPath = "/openapi/v1.json";
-    });
+    app.UseSwagger();
+    // app.UseSwaggerUI(c=>
+    //     c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1")
+    // );
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
-
+app.UseRouting();
+app.UseCors("MyAllowSpecificOrigins");
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
