@@ -16,6 +16,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddScoped<ITraineeService, TraineeService>();
 builder.Services.AddScoped<IMentorService, MentorService>();
+builder.Services.AddScoped<ILearningTaskService, LearningTaskService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseMySQL(
@@ -74,6 +75,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddLogging(logging =>
 {
     logging.ClearProviders();
+    logging.AddConsole(); 
     logging.SetMinimumLevel(LogLevel.Trace);
 });
 builder.Services.AddScoped<JwtService>();

@@ -9,22 +9,22 @@ using TraineeManagement.api.Services;
 
 [ApiController]
 [Authorize]
-[Route("/api/mentors")]
-public class MentorController : ControllerBase
+[Route("/api/learning-tasks")]
+public class LearningTaskController : ControllerBase
 {
-    public IMentorService _MentorService;
+    public ILearningTaskService _LearningTaskService;
 
-    public MentorController(IMentorService MentorService)
+    public LearningTaskController(ILearningTaskService LearningTaskService)
     {
-        _MentorService = MentorService;
+        _LearningTaskService = LearningTaskService;
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] string? search,MentorStatus? userStatus,int pageNumber=1, int pageSize=10)
+    public async Task<IActionResult> GetAll([FromQuery] string? search,LearnStatus? userStatus,int pageNumber=1, int pageSize=10)
     {
         try
         {
-            var res =await _MentorService.GetAll(pageNumber, pageSize,search,userStatus);
+            var res =await _LearningTaskService.GetAll(pageNumber, pageSize,search,userStatus);
             return Ok(res);
         }
         catch (Exception ex)
@@ -42,8 +42,8 @@ public class MentorController : ControllerBase
     {
         try
         {
-            MentorResponse? MentorResponse = await _MentorService.GetById(Id);
-            return MentorResponse == null ? NotFound() : Ok(MentorResponse);
+            LearningTaskResponse? LearningTaskResponse = await _LearningTaskService.GetById(Id);
+            return LearningTaskResponse == null ? NotFound() : Ok(LearningTaskResponse);
          }
         catch (Exception ex)
         {
@@ -56,12 +56,12 @@ public class MentorController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(CreateMentorRequest Mentor)
+    public async Task<IActionResult> Create(CreateLearningTaskRequest LearningTask)
     {
         try
         {
-            MentorResponse MentorResponse = await _MentorService.Create(Mentor);
-            return Ok(MentorResponse);
+            LearningTaskResponse LearningTaskResponse = await _LearningTaskService.Create(LearningTask);
+            return Ok(LearningTaskResponse);
         }
         catch (Exception ex)
         {
@@ -74,18 +74,18 @@ public class MentorController : ControllerBase
     }
     [HttpPut("{Id:int}")]
 
-    public async Task<IActionResult> Update(int Id, UpdateMentorRequest updateMentorRequest)
+    public async Task<IActionResult> Update(int Id, UpdateLearningTaskRequest updateLearningTaskRequest)
     {
         try
         {
-            MentorResponse? MentorResponse = await _MentorService.Update(Id, updateMentorRequest);
-            if (MentorResponse == null)
+            LearningTaskResponse? LearningTaskResponse = await _LearningTaskService.Update(Id, updateLearningTaskRequest);
+            if (LearningTaskResponse == null)
             {
                 return NotFound();
             }
             else
             {
-                return Ok(MentorResponse);
+                return Ok(LearningTaskResponse);
             }
         }
         catch (Exception ex)
@@ -104,8 +104,8 @@ public class MentorController : ControllerBase
     {
         try
         {
-            bool MentorResponse = await _MentorService.Delete(Id);
-            return MentorResponse == false ? NotFound() : StatusCode(204);
+            bool LearningTaskResponse = await _LearningTaskService.Delete(Id);
+            return LearningTaskResponse == false ? NotFound() : StatusCode(204);
         }
         catch (Exception ex)
         {

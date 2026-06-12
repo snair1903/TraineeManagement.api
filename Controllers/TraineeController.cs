@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using TraineeManagement.api.Models;
 using TraineeManagement.api.Services;
 
-[Authorize]
 [ApiController]
+[Authorize]
 [Route("/api/trainees")]
 public class TraineeController : ControllerBase
 {
