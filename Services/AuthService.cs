@@ -24,7 +24,7 @@ public class AuthService : IAuthService
             throw new ArgumentException("UserName cannot be empty.", nameof(loginRequest.UserName));
         if (string.IsNullOrWhiteSpace(loginRequest.Password))
             throw new ArgumentException("Password cannot be empty.", nameof(loginRequest.Password));
-        var user = _userContext.Users.FirstOrDefault(t => t.Username == loginRequest.UserName);
+        var user = _userContext.Users.FirstOrDefaultAsync(t => t.Username == loginRequest.UserName);
         if (user == null)
         {
             return null;
@@ -33,7 +33,7 @@ public class AuthService : IAuthService
         {
             return null;
         }
-         var token = _jwtService.GenerateToken(1, loginRequest.UserName);
+         var token = _jwtService.GenerateToken(1,user.Id, loginRequest.UserName,user.Role);
 
             return new LoginResponse
             {
