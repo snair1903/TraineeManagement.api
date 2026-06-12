@@ -6,10 +6,7 @@ using Microsoft.OpenApi;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
-using NLog.Extensions.Logging;
 
-[assembly: ApiController]
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
@@ -18,9 +15,10 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 // Add services to the container.
 
 builder.Services.AddScoped<ITraineeService, TraineeService>();
+builder.Services.AddScoped<IMentorService, MentorService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
-builder.Services.AddDbContext<AppDbContext>(options=>options.UseMySQL(
+builder.Services.AddDbContext<AppDbContext>(options => options.UseMySQL(
     connectionString
 ));
 
@@ -78,9 +76,7 @@ builder.Services.AddLogging(logging =>
     logging.ClearProviders();
     logging.SetMinimumLevel(LogLevel.Trace);
 });
-
 builder.Services.AddScoped<JwtService>();
-builder.Services.AddSingleton<ILoggerProvider, NLogLoggerProvider>();
 
 
 var app = builder.Build();

@@ -16,7 +16,7 @@ public class TraineeService : ITraineeService
         _logger = logger;
     }
 
-    public async Task<PagedResponse> GetAll(int pageNumber, int pageSize,string? search,TraineeStatus? userStatus)
+    public async Task<PagedResponse<TraineeResponse>> GetAll(int pageNumber, int pageSize,string? search,TraineeStatus? userStatus)
     {
         var query = _traineeContext.Trainees.AsQueryable();
         if (!string.IsNullOrWhiteSpace(search))
@@ -34,12 +34,7 @@ public class TraineeService : ITraineeService
 
         var data = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(t => new TraineeResponse(t)).ToListAsync();
         _logger.LogInformation("Get Success");
-        return new PagedResponse{
-            PageNumber = pageNumber,
-            PageSize = pageSize,
-            Data = data,
-            TotalRecords = data.Count()
-            };
+        return new PagedResponse<TraineeResponse>( data,pageNumber,pageSize, data.Count());
     }
 
 
