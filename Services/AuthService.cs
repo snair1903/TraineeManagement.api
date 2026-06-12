@@ -9,12 +9,12 @@ public class AuthService : IAuthService
 
     private readonly JwtService _jwtService;
 
-    // private readonly ILogger<AuthService>  _logger;
+    private readonly ILogger<AuthService>  _logger;
     public AuthService(AppDbContext context,JwtService jwtService,ILogger<AuthService> logger)
     {
         _userContext = context;
         _jwtService = jwtService;
-        // _logger = logger;
+        _logger = logger;
     }
 
 
@@ -27,17 +27,17 @@ public class AuthService : IAuthService
         var user = _userContext.Users.FirstOrDefault(t => t.Username == loginRequest.UserName);
         if (user == null)
         {
-            //  _logger.LogInformation("Login Failure: User not found");
+             _logger.LogInformation("Login Failure: User not found");
             return null;
         }
        if (!PasswordHasher.VerifyPassword(loginRequest.Password, user.PasswordHash))
         {
-            //  _logger.LogInformation("Login Failure:In correct Id or password");
+             _logger.LogInformation("Login Failure:In correct Id or password");
             return null;
         }
          var token = _jwtService.GenerateToken(1, loginRequest.UserName);
 
-            //  _logger.LogInformation("Login Success");
+             _logger.LogInformation("Login Success");
             return new LoginResponse
             {
                 Token = token,

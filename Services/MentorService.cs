@@ -9,11 +9,11 @@ public class MentorService : IMentorService
 {
     private readonly AppDbContext _MentorContext;
 
-    // private readonly ILogger<MentorService>  _logger;
+    private readonly ILogger<MentorService>  _logger;
     public MentorService(AppDbContext context,ILogger<MentorService> logger)
     {
         _MentorContext = context;
-        // _logger = logger;
+        _logger = logger;
     }
 
     public async Task<PagedResponse<MentorResponse>> GetAll(int pageNumber, int pageSize,string? search,MentorStatus? userStatus)
@@ -33,7 +33,7 @@ public class MentorService : IMentorService
         }
 
         var data = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(t => new MentorResponse(t)).ToListAsync();
-        // _logger.LogInformation("Get Success");
+        _logger.LogInformation("Get Success");
         return new PagedResponse<MentorResponse>( data,pageNumber,pageSize, data.Count());
     }
 
@@ -43,10 +43,10 @@ public class MentorService : IMentorService
         var Mentor = _MentorContext.Mentors.FirstOrDefault(t => t.Id == Id);
         if (Mentor == null)
         {
-            // _logger.LogInformation("Get Failure: No user found at id{}",Id);
+            _logger.LogInformation("Get Failure: No user found at id{}",Id);
             return null;
         }
-        // _logger.LogInformation("Get Success: user found at id {}",Id);
+        _logger.LogInformation("Get Success: user found at id {}",Id);
         return new MentorResponse(Mentor);
     }
 
@@ -56,7 +56,7 @@ public class MentorService : IMentorService
         var nt = new Mentor(Mentor);
         _MentorContext.Mentors.Add(nt);
         await _MentorContext.SaveChangesAsync();
-        // _logger.LogInformation("Create Success: Mentor id {}",nt.Id);
+        _logger.LogInformation("Create Success: Mentor id {}",nt.Id);
         return new MentorResponse(nt);
     }
 
@@ -65,7 +65,7 @@ public class MentorService : IMentorService
         var Mentor = _MentorContext.Mentors.FirstOrDefault(t => t.Id == Id);
         if (Mentor == null)
         {
-            // _logger.LogInformation("Update Fail: Mentor not found at id {}",Id);
+            _logger.LogInformation("Update Fail: Mentor not found at id {}",Id);
             return null;
         }
         Mentor.FirstName = updateMentorRequest.FirstName;
@@ -76,7 +76,7 @@ public class MentorService : IMentorService
         Mentor.Status = updateMentorRequest.Status;
 
         await _MentorContext.SaveChangesAsync();
-        // _logger.LogInformation("Update Success: id {}",Id);
+        _logger.LogInformation("Update Success: id {}",Id);
         return new MentorResponse(Mentor);
     }
 
@@ -85,12 +85,12 @@ public class MentorService : IMentorService
         var Mentor = _MentorContext.Mentors.FirstOrDefault(t => t.Id == Id);
         if (Mentor == null)
         {
-            // _logger.LogInformation("Delete Error:Mentor not Found at id {}",Id);
+            _logger.LogInformation("Delete Error:Mentor not Found at id {}",Id);
             return false;
         }
         _MentorContext.Mentors.Remove(Mentor);
         await _MentorContext.SaveChangesAsync();
-        // _logger.LogInformation("Delete Success: id{}",Id);
+        _logger.LogInformation("Delete Success: id{}",Id);
         return true;
     }
 }
