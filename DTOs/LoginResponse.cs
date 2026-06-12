@@ -6,6 +6,6 @@ public class LoginResponse
  
     public DateTime ExpiresIn { get; set; } = DateTime.Now;
 
-    public object User{get; set;} 
+    public required  UserResponse  User{get; set;} 
 
 }

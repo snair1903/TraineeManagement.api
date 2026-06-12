@@ -1,20 +1,20 @@
-using TraineeManagement.api.Models;
 using TraineeManagement.api.DTOs;
 using TraineeManagement.api.Services;
-using Microsoft.EntityFrameworkCore;
 using TraineeManagement.api.Data;
 using TraineeManagement.api.Utils;
-using Microsoft.AspNetCore.Identity;
+
 public class AuthService : IAuthService
 {
     private readonly AppDbContext _userContext;
 
     private readonly JwtService _jwtService;
 
-    public AuthService(AppDbContext context,JwtService jwtService)
+    private readonly ILogger<AuthService>  _logger;
+    public AuthService(AppDbContext context,JwtService jwtService,ILogger<AuthService> logger)
     {
         _userContext = context;
         _jwtService = jwtService;
+        _logger = logger;
     }
 
 
@@ -27,25 +27,23 @@ public class AuthService : IAuthService
         var user = _userContext.Users.FirstOrDefaultAsync(t => t.Username == loginRequest.UserName);
         if (user == null)
         {
+             _logger.LogInformation("Login Failure: User not found");
             return null;
         }
        if (!PasswordHasher.VerifyPassword(loginRequest.Password, user.PasswordHash))
         {
+             _logger.LogInformation("Login Failure:In correct Id or password");
             return null;
         }
          var token = _jwtService.GenerateToken(1,user.Id, loginRequest.UserName,user.Role);
 
+             _logger.LogInformation("Login Success");
             return new LoginResponse
             {
                 Token = token,
                 ExpiresIn = DateTime.Now.AddHours(1),
-                User = new {
-                    user.Id,
-                    user.Username,
-                    user.Role
-                }
-            };
-
+                User = new UserResponse (user)
+                };
     }
 
 }
