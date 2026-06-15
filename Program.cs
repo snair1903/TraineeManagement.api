@@ -20,7 +20,6 @@ builder.Services.AddScoped<IMentorService, MentorService>();
 builder.Services.AddScoped<ILearningTaskService, LearningTaskService>();
 builder.Services.AddScoped<ITaskAssignService, TaskAssignService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-
 builder.Services.AddDbContext<AppDbContext>(options => options.UseMySQL(
     connectionString
 ));

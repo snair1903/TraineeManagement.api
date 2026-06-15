@@ -38,9 +38,10 @@ public class TaskAssignService : ITaskAssignService
     public async Task<TaskAssignResponse> Create(CreateTaskAssignRequest TaskAssign)
     {
         int ltid = TaskAssign.LearningTaskId;
-        if(_TaskAssignContext.Trainees.FirstOrDefaultAsync(t => t.Id == TaskAssign.TraineeId)==null){throw new NotFoundException("No Trainee Found with Id "+TaskAssign.TraineeId);}
-        if(_TaskAssignContext.Mentors.FirstOrDefaultAsync(t => t.Id == TaskAssign.MentorId) == null){ throw new NotFoundException("No Mentor Found with Id "+TaskAssign.MentorId);}
-        if(_TaskAssignContext.LearningTasks.FirstOrDefaultAsync(t => t.Id == TaskAssign.LearningTaskId) == null){ throw new NotFoundException("No LearningTask Found with Id "+TaskAssign.LearningTaskId);}
+        if(await _TaskAssignContext.Trainees.FirstOrDefaultAsync(t => t.Id == TaskAssign.TraineeId)==null){throw new NotFoundException("No Trainee Found with Id "+TaskAssign.TraineeId);}
+        if(await _TaskAssignContext.Mentors.FirstOrDefaultAsync(t => t.Id == TaskAssign.MentorId) == null){ throw new NotFoundException("No Mentor Found with Id "+TaskAssign.MentorId);}
+        if(await _TaskAssignContext.LearningTasks.FirstOrDefaultAsync(t => t.Id == TaskAssign.LearningTaskId) == null){ throw new NotFoundException("No LearningTask Found with Id "+TaskAssign.LearningTaskId);}
+        if(TaskAssign.DueDate<TaskAssign.AssignedDate){throw new BadRequestException("Due Date cannot be before Assigned date");}
         var nt = new TaskAssignment(TaskAssign);
         _TaskAssignContext.TaskAssignments.Add(nt);
         await _TaskAssignContext.SaveChangesAsync();

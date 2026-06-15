@@ -22,6 +22,7 @@ public class LearningTaskResponse
 
     public LearningTaskResponse(LearningTask learningTask)
     {
+        Id = learningTask.Id;
         Title = learningTask.Title;
         Description = learningTask.Description;
         ExpectedTechStack = learningTask.ExpectedTechStack;
