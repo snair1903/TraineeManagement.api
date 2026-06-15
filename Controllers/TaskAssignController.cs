@@ -35,7 +35,7 @@ public class TaskAssignController : ControllerBase
     public async Task<IActionResult> Create(CreateTaskAssignRequest TaskAssign)
     {
         TaskAssignResponse TaskAssignResponse = await _TaskAssignService.Create(TaskAssign);
-            return Ok(TaskAssignResponse);
+            return Created($"/api/task-assignment/{TaskAssignResponse.Id}",TaskAssignResponse);
     }
     [HttpPut("{Id:int}")]
 

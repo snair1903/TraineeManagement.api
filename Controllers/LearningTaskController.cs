@@ -61,7 +61,7 @@ public class LearningTaskController : ControllerBase
         try
         {
             LearningTaskResponse LearningTaskResponse = await _LearningTaskService.Create(LearningTask);
-            return Ok(LearningTaskResponse);
+            return Created($"/api/learning-tasks/{LearningTaskResponse.Id}",LearningTaskResponse);
         }
         catch (Exception ex)
         {

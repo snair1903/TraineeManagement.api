@@ -61,7 +61,7 @@ public class MentorController : ControllerBase
         try
         {
             MentorResponse MentorResponse = await _MentorService.Create(Mentor);
-            return Ok(MentorResponse);
+            return Created($"/api/mentors/{MentorResponse.Id}",MentorResponse);
         }
         catch (Exception ex)
         {

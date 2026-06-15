@@ -35,7 +35,7 @@ public class SubmissionController : ControllerBase
     public async Task<IActionResult> Create(CreateSubmissionRequest Submission)
     {
         SubmissionResponse SubmissionResponse = await _SubmissionService.Create(Submission);
-            return Ok(SubmissionResponse);
+            return Created($"/api/submissions/{SubmissionResponse.Id}",SubmissionResponse);
     }
     
 }

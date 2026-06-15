@@ -10,7 +10,7 @@ namespace TraineeManagement.api.Models
 
         public string SubmissionUrl { get; set; } = "";
 
-        public string Notes { get; private set; } = "";
+        public string Notes { get; set; } = "";
 
         public DateTime SubmissionDate { get; set; } 
         public SubmissionStatus Status { get; set; }

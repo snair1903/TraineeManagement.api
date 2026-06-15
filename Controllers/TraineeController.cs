@@ -60,7 +60,7 @@ public class TraineeController : ControllerBase
         try
         {
             TraineeResponse traineeResponse = await _traineeService.Create(trainee);
-            return Ok(traineeResponse);
+            return Created($"/api/learning-tasks/{traineeResponse.Id}",traineeResponse);
         }
         catch (Exception ex)
         {
