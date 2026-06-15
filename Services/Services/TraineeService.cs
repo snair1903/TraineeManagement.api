@@ -73,7 +73,6 @@ public class TraineeService : ITraineeService
         trainee.LastName = updateTraineeRequest.LastName;
         trainee.TechStack = updateTraineeRequest.TechStack;
         trainee.Email = updateTraineeRequest.Email;
-        trainee.UpdatedDate = updateTraineeRequest.UpdatedDate;
         trainee.Status = updateTraineeRequest.Status;
 
         await _traineeContext.SaveChangesAsync();

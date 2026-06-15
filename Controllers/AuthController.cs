@@ -8,13 +8,13 @@ using TraineeManagement.api.Services;
 
 public class AuthController : ControllerBase
 {
-     public IAuthService _authService;
+     private IAuthService _authService;
 
      public AuthController(IAuthService authService)
     {
         _authService = authService;
     }
-    [HttpPost("/login")]
+    [HttpPost("login")]
     public async Task<IActionResult> Login(LoginRequest user)
     {
             LoginResponse? loginResponse = await _authService.Login(user);
