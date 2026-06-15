@@ -17,13 +17,13 @@ public class TraineeController : ControllerBase
     {
         _traineeService = traineeService;
     }
-    
+
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] string? search,TraineeStatus? userStatus,int pageNumber=1, int pageSize=10)
+    public async Task<IActionResult> GetAll([FromQuery] string? search, TraineeStatus? userStatus, int pageNumber = 1, int pageSize = 10)
     {
         try
         {
-            var res =await _traineeService.GetAll(pageNumber, pageSize,search,userStatus);
+            var res = await _traineeService.GetAll(pageNumber, pageSize, search, userStatus);
             return Ok(res);
         }
         catch (Exception ex)
@@ -43,7 +43,7 @@ public class TraineeController : ControllerBase
         {
             TraineeResponse? traineeResponse = await _traineeService.GetById(Id);
             return traineeResponse == null ? NotFound() : Ok(traineeResponse);
-         }
+        }
         catch (Exception ex)
         {
             return StatusCode(500, new
@@ -57,62 +57,22 @@ public class TraineeController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(CreateTraineeRequest trainee)
     {
-        try
-        {
-            TraineeResponse traineeResponse = await _traineeService.Create(trainee);
-            return Created($"/api/learning-tasks/{traineeResponse.Id}",traineeResponse);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new
-            {
-                error = "Internal Server Error",
-                details = ex.Message
-            });
-        }
+        TraineeResponse traineeResponse = await _traineeService.Create(trainee);
+        return Created($"/api/learning-tasks/{traineeResponse.Id}", traineeResponse);
     }
     [HttpPut("{Id:int}")]
 
     public async Task<IActionResult> Update(int Id, UpdateTraineeRequest updateTraineeRequest)
     {
-        try
-        {
-            TraineeResponse? traineeResponse = await _traineeService.Update(Id, updateTraineeRequest);
-            if (traineeResponse == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(traineeResponse);
-            }
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new
-            {
-                error = "Internal Server Error",
-                details = ex.Message
-            });
-        }
+        TraineeResponse? traineeResponse = await _traineeService.Update(Id, updateTraineeRequest);
+        return Ok(traineeResponse);
 
     }
     [HttpDelete("{Id:int}")]
 
-    public async  Task<IActionResult> Delete(int Id)
+    public async Task<IActionResult> Delete(int Id)
     {
-        try
-        {
-            bool traineeResponse = await _traineeService.Delete(Id);
-            return traineeResponse == false ? NotFound() : StatusCode(204);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new
-            {
-                error = "Internal Server Error",
-                details = ex.Message
-            });
-        }
+        bool traineeResponse = await _traineeService.Delete(Id);
+        return traineeResponse == false ? NotFound() : StatusCode(204);
     }
 }

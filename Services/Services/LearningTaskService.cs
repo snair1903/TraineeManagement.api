@@ -3,6 +3,7 @@ using TraineeManagement.api.DTOs;
 using TraineeManagement.api.Services;
 using Microsoft.EntityFrameworkCore;
 using TraineeManagement.api.Data;
+using TraineeManagement.api.Exceptions;
 
 
 public class LearningTaskService : ILearningTaskService
@@ -66,7 +67,7 @@ public class LearningTaskService : ILearningTaskService
         if (LearningTask == null)
         {
             _logger.LogInformation("Update Fail: LearningTask not found at id {}",Id);
-            return null;
+            throw new NotFoundException($"Learning Task not found at Id {Id}");
         }
         LearningTask.Title = updateLearningTaskRequest.Title;
         LearningTask.Description = updateLearningTaskRequest.Description;

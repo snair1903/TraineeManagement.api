@@ -3,6 +3,8 @@ using TraineeManagement.api.DTOs;
 using TraineeManagement.api.Services;
 using Microsoft.EntityFrameworkCore;
 using TraineeManagement.api.Data;
+using Microsoft.AspNetCore.Http.HttpResults;
+using TraineeManagement.api.Exceptions;
 
 
 public class MentorService : IMentorService
@@ -44,7 +46,7 @@ public class MentorService : IMentorService
         if (Mentor == null)
         {
             _logger.LogInformation("Get Failure: No user found at id{}",Id);
-            return null;
+            throw new NotFoundException($"Mentor not found at {Id}");
         }
         _logger.LogInformation("Get Success: user found at id {}",Id);
         return new MentorResponse(Mentor);
@@ -66,7 +68,7 @@ public class MentorService : IMentorService
         if (Mentor == null)
         {
             _logger.LogInformation("Update Fail: Mentor not found at id {}",Id);
-            return null;
+            throw new BadRequestException("Mntor Id is Invalid");
         }
         Mentor.FirstName = updateMentorRequest.FirstName;
         Mentor.LastName = updateMentorRequest.LastName;
@@ -86,7 +88,7 @@ public class MentorService : IMentorService
         if (Mentor == null)
         {
             _logger.LogInformation("Delete Error:Mentor not Found at id {}",Id);
-            return false;
+            throw new NotFoundException($"Mentor Not found at Id{Id}");
         }
         _MentorContext.Mentors.Remove(Mentor);
         await _MentorContext.SaveChangesAsync();

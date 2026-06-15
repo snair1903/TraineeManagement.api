@@ -18,13 +18,13 @@ public class MentorController : ControllerBase
     {
         _MentorService = MentorService;
     }
-    
+
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] string? search,MentorStatus? userStatus,int pageNumber=1, int pageSize=10)
+    public async Task<IActionResult> GetAll([FromQuery] string? search, MentorStatus? userStatus, int pageNumber = 1, int pageSize = 10)
     {
         try
         {
-            var res =await _MentorService.GetAll(pageNumber, pageSize,search,userStatus);
+            var res = await _MentorService.GetAll(pageNumber, pageSize, search, userStatus);
             return Ok(res);
         }
         catch (Exception ex)
@@ -44,7 +44,7 @@ public class MentorController : ControllerBase
         {
             MentorResponse? MentorResponse = await _MentorService.GetById(Id);
             return MentorResponse == null ? NotFound() : Ok(MentorResponse);
-         }
+        }
         catch (Exception ex)
         {
             return StatusCode(500, new
@@ -58,19 +58,8 @@ public class MentorController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(CreateMentorRequest Mentor)
     {
-        try
-        {
-            MentorResponse MentorResponse = await _MentorService.Create(Mentor);
-            return Created($"/api/mentors/{MentorResponse.Id}",MentorResponse);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new
-            {
-                error = "Internal Server Error",
-                details = ex.Message
-            });
-        }
+        MentorResponse MentorResponse = await _MentorService.Create(Mentor);
+        return Created($"/api/mentors/{MentorResponse.Id}", MentorResponse);
     }
     [HttpPut("{Id:int}")]
 
@@ -79,14 +68,7 @@ public class MentorController : ControllerBase
         try
         {
             MentorResponse? MentorResponse = await _MentorService.Update(Id, updateMentorRequest);
-            if (MentorResponse == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(MentorResponse);
-            }
+            return Ok(MentorResponse);
         }
         catch (Exception ex)
         {
@@ -100,20 +82,9 @@ public class MentorController : ControllerBase
     }
     [HttpDelete("{Id:int}")]
 
-    public async  Task<IActionResult> Delete(int Id)
+    public async Task<IActionResult> Delete(int Id)
     {
-        try
-        {
-            bool MentorResponse = await _MentorService.Delete(Id);
-            return MentorResponse == false ? NotFound() : StatusCode(204);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new
-            {
-                error = "Internal Server Error",
-                details = ex.Message
-            });
-        }
+        bool MentorResponse = await _MentorService.Delete(Id);
+        return MentorResponse == false ? NotFound() : StatusCode(204);
     }
 }

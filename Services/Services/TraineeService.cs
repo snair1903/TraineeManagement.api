@@ -3,6 +3,7 @@ using TraineeManagement.api.DTOs;
 using TraineeManagement.api.Services;
 using Microsoft.EntityFrameworkCore;
 using TraineeManagement.api.Data;
+using TraineeManagement.api.Exceptions;
 
 
 public class TraineeService : ITraineeService
@@ -44,7 +45,7 @@ public class TraineeService : ITraineeService
         if (trainee == null)
         {
             _logger.LogInformation("Get Failure: No user found at id{}",Id);
-            return null;
+            throw new NotFoundException($"Trainee not found at Id {Id}");
         }
         _logger.LogInformation("Get Success: user found at id {}",Id);
         return new TraineeResponse(trainee);
@@ -66,7 +67,7 @@ public class TraineeService : ITraineeService
         if (trainee == null)
         {
             _logger.LogInformation("Update Fail: Trainee not found at id {}",Id);
-            return null;
+            throw new NotFoundException($"Trainee not found at {Id}");
         }
         trainee.FirstName = updateTraineeRequest.FirstName;
         trainee.LastName = updateTraineeRequest.LastName;
@@ -86,7 +87,7 @@ public class TraineeService : ITraineeService
         if (trainee == null)
         {
             _logger.LogInformation("Delete Error:Trainee not Found at id {}",Id);
-            return false;
+            throw new NotFoundException($"Trainee not found at {Id}");
         }
         _traineeContext.Trainees.Remove(trainee);
         await _traineeContext.SaveChangesAsync();
