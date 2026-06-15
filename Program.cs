@@ -1,6 +1,7 @@
 using TraineeManagement.api.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using TraineeManagement.api.Middleware;
 using TraineeManagement.api.Data;
 using Microsoft.OpenApi;
 using System.Text;
@@ -17,6 +18,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddScoped<ITraineeService, TraineeService>();
 builder.Services.AddScoped<IMentorService, MentorService>();
 builder.Services.AddScoped<ILearningTaskService, LearningTaskService>();
+builder.Services.AddScoped<ITaskAssignService, TaskAssignService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseMySQL(
@@ -80,6 +82,9 @@ builder.Services.AddLogging(logging =>
 });
 builder.Services.AddScoped<JwtService>();
 
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionhandler>();
+
 
 var app = builder.Build();
 
@@ -98,7 +103,7 @@ app.UseRouting();
 app.UseCors("MyAllowSpecificOrigins");
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseExceptionHandler();
 app.MapControllers();
 
 app.Run();
