@@ -92,6 +92,34 @@ namespace TraineeManagement.api.Migrations
                     b.ToTable("Mentors");
                 });
 
+            modelBuilder.Entity("TraineeManagement.api.Models.Submission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("SubmissionDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("SubmissionUrl")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("TaskAssignmentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Submissions");
+                });
+
             modelBuilder.Entity("TraineeManagement.api.Models.TaskAssignment", b =>
                 {
                     b.Property<int>("Id")
@@ -188,8 +216,7 @@ namespace TraineeManagement.api.Migrations
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 

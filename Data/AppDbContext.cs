@@ -15,5 +15,8 @@ public class AppDbContext : DbContext
     public DbSet<LearningTask> LearningTasks {get;set;}
 
     public DbSet<TaskAssignment> TaskAssignments {get;set;}
+
+    public DbSet<Submission> Submissions {get;set;}
+
     public DbSet<User> Users {get;set;}
 }
