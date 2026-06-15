@@ -17,6 +17,7 @@ namespace TraineeManagement.api.Models
 
         public DateTime SubmissionDate { get; set; } 
         public ReviewStatus Status { get; set; }
+        
          
     public Review(CreateReviewRequest reviewRequest)
         {

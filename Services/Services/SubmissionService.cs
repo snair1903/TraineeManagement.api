@@ -37,7 +37,7 @@ public class SubmissionService : ISubmissionService
 
     public async Task<SubmissionResponse> Create(CreateSubmissionRequest Submission)
     {
-        if(await _SubmissionContext.Submissions.FirstOrDefaultAsync(t => t.Id == Submission.TaskAssignmentId)==null){throw new NotFoundException("No Trainee Found with Id "+Submission.TaskAssignmentId);}
+        if(await _SubmissionContext.TaskAssignments.FirstOrDefaultAsync(t => t.Id == Submission.TaskAssignmentId)==null){throw new NotFoundException("No Task Assignments Found with Id "+Submission.TaskAssignmentId);}
         var nt = new Submission(Submission);
         _SubmissionContext.Submissions.Add(nt);
         await _SubmissionContext.SaveChangesAsync();
