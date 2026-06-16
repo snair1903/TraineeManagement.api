@@ -2,6 +2,7 @@ using TraineeManagement.api.DTOs;
 using TraineeManagement.api.Services;
 using TraineeManagement.api.Data;
 using TraineeManagement.api.Utils;
+using Microsoft.EntityFrameworkCore;
 
 public class AuthService : IAuthService
 {
@@ -24,7 +25,7 @@ public class AuthService : IAuthService
             throw new ArgumentException("UserName cannot be empty.", nameof(loginRequest.UserName));
         if (string.IsNullOrWhiteSpace(loginRequest.Password))
             throw new ArgumentException("Password cannot be empty.", nameof(loginRequest.Password));
-        var user = _userContext.Users.FirstOrDefaultAsync(t => t.Username == loginRequest.UserName);
+        var user =await  _userContext.Users.FirstOrDefaultAsync(t => t.Username == loginRequest.UserName);
         if (user == null)
         {
              _logger.LogInformation("Login Failure: User not found");
@@ -35,7 +36,7 @@ public class AuthService : IAuthService
              _logger.LogInformation("Login Failure:In correct Id or password");
             return null;
         }
-         var token = _jwtService.GenerateToken(1,user.Id, loginRequest.UserName,user.Role);
+         var token = _jwtService.GenerateToken(user.Id, loginRequest.UserName,user.Role);
 
              _logger.LogInformation("Login Success");
             return new LoginResponse

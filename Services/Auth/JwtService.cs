@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using TraineeManagement.api.Models;
 
 
 public class JwtService
@@ -11,7 +12,7 @@ public class JwtService
     {
         _config = config;
     }
-    public string GenerateToken(int userId, string username)
+    public string GenerateToken(int userId, string username,UserRole userRole)
     {
         var jwtSettings = _config.GetSection("JwtSettings");
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!));
@@ -19,6 +20,7 @@ public class JwtService
         {
             new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
             new Claim(JwtRegisteredClaimNames.UniqueName, username),
+            new Claim("Role",userRole.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
         var token = new JwtSecurityToken(
