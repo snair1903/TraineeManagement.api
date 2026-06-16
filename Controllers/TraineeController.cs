@@ -1,10 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using TraineeManagement.api.DTOs;
 namespace TraineeManagement.api.Controllers;
+
+using Microsoft.AspNetCore.Authorization;
+using TraineeManagement.api.Models;
 using TraineeManagement.api.Services;
 
+[Authorize]
 [ApiController]
-[Route("/api/trainee")]
+[Route("/api/trainees")]
 public class TraineeController : ControllerBase
 {
     public ITraineeService _traineeService;
@@ -13,13 +17,13 @@ public class TraineeController : ControllerBase
     {
         _traineeService = traineeService;
     }
-
+    
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] string? search)
+    public async Task<IActionResult> GetAll([FromQuery] string? search,TraineeStatus? userStatus,int pageNumber=1, int pageSize=10)
     {
         try
         {
-            var res =await _traineeService.GetAll(search);
+            var res =await _traineeService.GetAll(pageNumber, pageSize,search,userStatus);
             return Ok(res);
         }
         catch (Exception ex)
@@ -31,7 +35,6 @@ public class TraineeController : ControllerBase
             });
         }
     }
-
     [HttpGet("{Id:int}")]
 
     public async Task<IActionResult> GetbyId(int Id)
@@ -68,7 +71,6 @@ public class TraineeController : ControllerBase
             });
         }
     }
-
     [HttpPut("{Id:int}")]
 
     public async Task<IActionResult> Update(int Id, UpdateTraineeRequest updateTraineeRequest)
@@ -95,7 +97,6 @@ public class TraineeController : ControllerBase
         }
 
     }
-
     [HttpDelete("{Id:int}")]
 
     public async  Task<IActionResult> Delete(int Id)
