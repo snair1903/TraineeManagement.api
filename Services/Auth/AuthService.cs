@@ -3,6 +3,7 @@ using TraineeManagement.api.Services;
 using TraineeManagement.api.Data;
 using TraineeManagement.api.Utils;
 using Microsoft.EntityFrameworkCore;
+using TraineeManagement.api.Exceptions;
 
 public class AuthService : IAuthService
 {
@@ -19,7 +20,7 @@ public class AuthService : IAuthService
     }
 
 
-    public async Task<LoginResponse?> Login(LoginRequest loginRequest)
+    public async Task<LoginResponse> Login(LoginRequest loginRequest)
     {
          if (string.IsNullOrWhiteSpace(loginRequest.UserName))
             throw new ArgumentException("UserName cannot be empty.", nameof(loginRequest.UserName));
@@ -29,12 +30,12 @@ public class AuthService : IAuthService
         if (user == null)
         {
              _logger.LogInformation("Login Failure: User not found");
-            return null;
+            throw new UnAuthorizedtException("Invalid User Name");
         }
        if (!PasswordHasher.VerifyPassword(loginRequest.Password, user.PasswordHash))
         {
              _logger.LogInformation("Login Failure:In correct Id or password");
-            return null;
+            throw new UnAuthorizedtException("Invalid Password");
         }
          var token = _jwtService.GenerateToken(user.Id, loginRequest.UserName,user.Role);
 
