@@ -22,98 +22,36 @@ public class LearningTaskController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] string? search,LearnStatus? userStatus,int pageNumber=1, int pageSize=10)
     {
-        try
-        {
-            var res =await _LearningTaskService.GetAll(pageNumber, pageSize,search,userStatus);
+        var res =await _LearningTaskService.GetAll(pageNumber, pageSize,search,userStatus);
             return Ok(res);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new
-            {
-                error = "Internal Server Error",
-                details = ex.Message
-            });
-        }
     }
     [HttpGet("{Id:int}")]
 
     public async Task<IActionResult> GetbyId(int Id)
     {
-        try
-        {
-            LearningTaskResponse? LearningTaskResponse = await _LearningTaskService.GetById(Id);
+        LearningTaskResponse? LearningTaskResponse = await _LearningTaskService.GetById(Id);
             return LearningTaskResponse == null ? NotFound() : Ok(LearningTaskResponse);
-         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new
-            {
-                error = "Internal Server Error",
-                details = ex.Message
-            });
-        }
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(CreateLearningTaskRequest LearningTask)
     {
-        try
-        {
-            LearningTaskResponse LearningTaskResponse = await _LearningTaskService.Create(LearningTask);
-            return Ok(LearningTaskResponse);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new
-            {
-                error = "Internal Server Error",
-                details = ex.Message
-            });
-        }
+        LearningTaskResponse LearningTaskResponse = await _LearningTaskService.Create(LearningTask);
+            return Created($"/api/learning-tasks/{LearningTaskResponse.Id}",LearningTaskResponse);
     }
     [HttpPut("{Id:int}")]
 
     public async Task<IActionResult> Update(int Id, UpdateLearningTaskRequest updateLearningTaskRequest)
     {
-        try
-        {
-            LearningTaskResponse? LearningTaskResponse = await _LearningTaskService.Update(Id, updateLearningTaskRequest);
-            if (LearningTaskResponse == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(LearningTaskResponse);
-            }
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new
-            {
-                error = "Internal Server Error",
-                details = ex.Message
-            });
-        }
+        LearningTaskResponse? LearningTaskResponse = await _LearningTaskService.Update(Id, updateLearningTaskRequest);
+        return Ok(LearningTaskResponse);
 
     }
     [HttpDelete("{Id:int}")]
 
     public async  Task<IActionResult> Delete(int Id)
     {
-        try
-        {
-            bool LearningTaskResponse = await _LearningTaskService.Delete(Id);
+        bool LearningTaskResponse = await _LearningTaskService.Delete(Id);
             return LearningTaskResponse == false ? NotFound() : StatusCode(204);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new
-            {
-                error = "Internal Server Error",
-                details = ex.Message
-            });
-        }
     }
 }
