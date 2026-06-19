@@ -12,6 +12,7 @@ public class LocalFileStorageService : IFileStorageService
     private string[] permittedExtensions = { ".txt", ".pdf" };
     private readonly string _storageDirectory;
     private readonly AppDbContext _SubmissionFileContext;
+    private long sizeLt =  10*1024*1024;
 
     public LocalFileStorageService(IConfiguration configuration, AppDbContext context)
     {
@@ -23,14 +24,18 @@ public class LocalFileStorageService : IFileStorageService
 
     public async Task<SubmissionFileResponse> SaveAsync(IFormFile file, int UploadedById, int submissionId)
     {
-
+         var Submission =await _SubmissionFileContext.Submissions.FindAsync(submissionId);
+        if (Submission == null)
+        {
+            throw new NotFoundException("Submission not found at Id"+submissionId);
+        }
         string fileId = Guid.NewGuid().ToString("N");
         using var sha256 = SHA256.Create();
         using var stream = file.OpenReadStream();
         byte[] hashBytes = sha256.ComputeHash(stream);
         string ext = Path.GetExtension(file.FileName).ToLowerInvariant();
         if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext)) throw new BadRequestException("Unallowed file type");
-        if(file.Length>(10*1024*1024)||file.Length==0) throw new RequestEntityTooLargeException("File size greater than 10mb or Empty");
+        if(file.Length>sizeLt||file.Length==0) throw new RequestEntityTooLargeException("File size greater than 10mb or Empty");
         string checksum = BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
         stream.Position = 0;
         var metaData = new CreateSubmissionFileRequest
