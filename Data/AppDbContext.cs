@@ -20,5 +20,7 @@ public class AppDbContext : DbContext
 
     public DbSet<Review> Reviews {get;set;}
 
+    public DbSet<SubmissionFile> SubmissionFiles {get;set;}
+
     public DbSet<User> Users {get;set;}
 }

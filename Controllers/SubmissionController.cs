@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using TraineeManagement.api.DTOs;
 namespace TraineeManagement.api.Controllers;
+
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using TraineeManagement.api.Exceptions;
 using TraineeManagement.api.Models;
 using TraineeManagement.api.Services;
 
@@ -13,9 +16,12 @@ public class SubmissionController : ControllerBase
 {
     public ISubmissionService _SubmissionService;
 
-    public SubmissionController(ISubmissionService SubmissionService)
+    public IFileStorageService _SubmissionFileService;
+
+    public SubmissionController(ISubmissionService SubmissionService,IFileStorageService fileStorageService)
     {
         _SubmissionService = SubmissionService;
+        _SubmissionFileService = fileStorageService;
     }
     
     [HttpGet]
@@ -37,5 +43,19 @@ public class SubmissionController : ControllerBase
         SubmissionResponse SubmissionResponse = await _SubmissionService.Create(Submission);
             return Created($"/api/submissions/{SubmissionResponse.Id}",SubmissionResponse);
     }
+
+
+    [HttpPost("{submissionId}/files")]
+    public async Task<IActionResult> Save(int submissionId,IFormFile file)
+    {
+        int UploadedById =int.Parse( User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        if(file.Length>(10*1024*1024)||file.Length==0) throw new BadRequestException("File size greater than 10mb or Empty");
+        Console.WriteLine(UploadedById);
+        SubmissionFileResponse submissionFileResponse = await _SubmissionFileService.SaveAsync(file,UploadedById,submissionId);
+        return Created($"/api/submissions/{submissionId}/files",submissionFileResponse);
+    }
+
+
+
     
 }
