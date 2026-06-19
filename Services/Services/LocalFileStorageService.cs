@@ -2,6 +2,7 @@
 using System.Runtime.Intrinsics.Arm;
 using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.Cms;
 using TraineeManagement.api.Data;
 using TraineeManagement.api.Exceptions;
 using TraineeManagement.api.Models;
@@ -34,11 +35,11 @@ public class LocalFileStorageService : IFileStorageService
         using var stream = file.OpenReadStream();
         byte[] hashBytes = sha256.ComputeHash(stream);
         string ext = Path.GetExtension(file.FileName).ToLowerInvariant();
-        if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext)) throw new BadRequestException("Unallowed file type");
+        if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext)) throw new UnsupportedMediaTypeException("Unallowed file type");
         if(file.Length>sizeLt||file.Length==0) throw new RequestEntityTooLargeException("File size greater than 10mb or Empty");
         string checksum = BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
         stream.Position = 0;
-        var metaData = new CreateSubmissionFileRequest
+        var metaData = new SubmissionFile
         {
             OriginalFileName = file.FileName,
             SubmissionId = submissionId,
@@ -48,15 +49,14 @@ public class LocalFileStorageService : IFileStorageService
             Checksum = checksum,
             UploadedById = UploadedById
         };
-        var nt = new SubmissionFile(metaData);
-        await _SubmissionFileContext.SubmissionFiles.AddAsync(nt);
+        await _SubmissionFileContext.SubmissionFiles.AddAsync(metaData);
         await _SubmissionFileContext.SaveChangesAsync();
         string path = Path.Combine(_storageDirectory, fileId);
         string fullpath = Path.GetFullPath(path);
         fullpath = fullpath + ext;
         using var fileStream = new FileStream(fullpath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true);
         await stream.CopyToAsync(fileStream);
-        return new SubmissionFileResponse(nt);
+        return new SubmissionFileResponse(metaData);
 
     }
 

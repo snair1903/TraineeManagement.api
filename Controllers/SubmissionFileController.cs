@@ -33,7 +33,7 @@ public class SubmissionFileController : ControllerBase
     }
 
     
-    [HttpDelete("{Id}/download")]
+    [HttpDelete("{Id}/files")]
     public async Task<IActionResult> Delete(int Id)
     {
         await _SubmissionFileService.DeleteAsync(Id);

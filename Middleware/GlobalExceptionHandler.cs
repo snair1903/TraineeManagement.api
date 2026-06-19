@@ -23,6 +23,7 @@ public class GlobalExceptionhandler:IExceptionHandler
           BadRequestException =>(StatusCodes.Status400BadRequest,"Bad Request"),
           UnAuthorizedtException => (StatusCodes.Status401Unauthorized,"UNauthorized"),
           RequestEntityTooLargeException =>(StatusCodes.Status413RequestEntityTooLarge,"RequestEntityTooLarge"),
+          UnsupportedMediaTypeException =>(StatusCodes.Status415UnsupportedMediaType,"Unsupported File Extension"),
           _ =>(StatusCodes.Status500InternalServerError,"InternalServer Error")  
         };
 

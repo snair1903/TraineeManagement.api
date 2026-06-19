@@ -17,17 +17,5 @@ public class SubmissionFile
 
     public DateTime Timestamp {get; set;}
 
-    public SubmissionFile(CreateSubmissionFileRequest file)
-    {
-        OriginalFileName = file.OriginalFileName;
-        SubmissionId = file.SubmissionId;
-        FileStorageName = file.FileStorageName;
-        Size = file.Size;
-        ContentType = file.ContentType;
-        Checksum = file.Checksum;
-        UploadedById = file.UploadedById;
-        Timestamp = DateTime.Now;
-    }
-    SubmissionFile(){}
-
+   
 }
