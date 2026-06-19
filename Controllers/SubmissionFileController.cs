@@ -23,7 +23,7 @@ public class SubmissionFileController : ControllerBase
         _SubmissionFileContext = context;
     }
     
-    [HttpPost("{Id}/download")]
+    [HttpGet("{Id}/download")]
     public async Task<IActionResult> Download(int Id)
     {   
         FileStream submissionFile = await _SubmissionFileService.OpenReadAsync(Id);
@@ -33,8 +33,12 @@ public class SubmissionFileController : ControllerBase
     }
 
     
-    // [HttpGet("{Id:int}")]
-    
+    [HttpDelete("{Id}/download")]
+    public async Task<IActionResult> Delete(int Id)
+    {
+        await _SubmissionFileService.DeleteAsync(Id);
+        return NoContent();
+    }
 
     // [HttpPost]
    

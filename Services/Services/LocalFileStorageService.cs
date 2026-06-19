@@ -6,26 +6,27 @@ using TraineeManagement.api.Data;
 using TraineeManagement.api.Exceptions;
 using TraineeManagement.api.Models;
 namespace TraineeManagement.api.Services;
+
 public class LocalFileStorageService : IFileStorageService
 {
     private string[] permittedExtensions = { ".txt", ".pdf" };
     private readonly string _storageDirectory;
     private readonly AppDbContext _SubmissionFileContext;
 
-    public LocalFileStorageService(IConfiguration configuration,AppDbContext context)
+    public LocalFileStorageService(IConfiguration configuration, AppDbContext context)
     {
         _SubmissionFileContext = context;
-        var baseDirectory = configuration.GetSection("StorageRoot") ;
+        var baseDirectory = configuration.GetSection("StorageRoot");
         _storageDirectory = Path.GetFullPath(baseDirectory["StoragePath"]!);
         Directory.CreateDirectory(_storageDirectory);
     }
 
-    public async Task<SubmissionFileResponse> SaveAsync(IFormFile file,int UploadedById,int submissionId)
+    public async Task<SubmissionFileResponse> SaveAsync(IFormFile file, int UploadedById, int submissionId)
     {
-        
+
         string fileId = Guid.NewGuid().ToString("N");
         using var sha256 = SHA256.Create();
-        using var stream = file.OpenReadStream(); 
+        using var stream = file.OpenReadStream();
         byte[] hashBytes = sha256.ComputeHash(stream);
         string ext = Path.GetExtension(file.FileName).ToLowerInvariant();
         if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext)) throw new BadRequestException("Unallowed file type");
@@ -35,7 +36,7 @@ public class LocalFileStorageService : IFileStorageService
         {
             OriginalFileName = file.FileName,
             SubmissionId = submissionId,
-            FileStorageName = fileId+ext,
+            FileStorageName = fileId + ext,
             Size = file.Length,
             ContentType = file.ContentType,
             Checksum = checksum,
@@ -46,7 +47,7 @@ public class LocalFileStorageService : IFileStorageService
         await _SubmissionFileContext.SaveChangesAsync();
         string path = Path.Combine(_storageDirectory, fileId);
         string fullpath = Path.GetFullPath(path);
-        fullpath = fullpath+ext;
+        fullpath = fullpath + ext;
         using var fileStream = new FileStream(fullpath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true);
         await stream.CopyToAsync(fileStream);
         return new SubmissionFileResponse(nt);
@@ -55,13 +56,13 @@ public class LocalFileStorageService : IFileStorageService
 
     public async Task<FileStream> OpenReadAsync(int Id)
     {
-        var sub = await _SubmissionFileContext.SubmissionFiles.FindAsync( Id);
+        var sub = await _SubmissionFileContext.SubmissionFiles.FindAsync(Id);
+        if (sub == null) throw new NotFoundException($"File not found at Id{Id}");
         string fileId = sub.FileStorageName;
-        Console.WriteLine(fileId);
 
         if (!await ExistsAsync(fileId))
         {
-            throw new FileNotFoundException($"The file with ID {Id} was not found.");
+            throw new NotFoundException($"The file with ID {Id} was not found.");
         }
         string path = Path.Combine(_storageDirectory, fileId);
         string filePath = Path.GetFullPath(path);
@@ -76,15 +77,20 @@ public class LocalFileStorageService : IFileStorageService
         return File.Exists(filePath);
     }
 
-    public Task DeleteAsync(string fileId)
+    public async Task DeleteAsync(int Id)
     {
-        string filePath = Path.Combine(_storageDirectory, fileId.ToString());
-
-        if (File.Exists(filePath))
+        var sub = await _SubmissionFileContext.SubmissionFiles.FindAsync(Id);
+        if (sub == null) throw new NotFoundException($"File not found at Id{Id}");
+        string fileId = sub.FileStorageName;
+        if (!await ExistsAsync(fileId))
         {
-            File.Delete(filePath);
+            throw new NotFoundException($"The file with ID {Id} was not found.");
         }
+        string path = Path.Combine(_storageDirectory, fileId);
+        string filePath = Path.GetFullPath(path);
+        File.Delete(filePath);
+        _SubmissionFileContext.SubmissionFiles.Remove(sub);
+        await _SubmissionFileContext.SaveChangesAsync();
 
-        return Task.CompletedTask;
     }
 }

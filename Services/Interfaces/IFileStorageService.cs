@@ -7,5 +7,5 @@ public interface IFileStorageService
     Task<SubmissionFileResponse> SaveAsync(IFormFile file,int UploadedById,int SubmissionId);
     Task<FileStream> OpenReadAsync(int fileId);
     Task<bool> ExistsAsync(string fileId);
-    Task DeleteAsync(string fileId);
+    Task DeleteAsync(int fileId);
 }
