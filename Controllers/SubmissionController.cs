@@ -49,8 +49,6 @@ public class SubmissionController : ControllerBase
     public async Task<IActionResult> Save(int submissionId,IFormFile file)
     {
         int UploadedById =int.Parse( User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-        if(file.Length>(10*1024*1024)||file.Length==0) throw new BadRequestException("File size greater than 10mb or Empty");
-        Console.WriteLine(UploadedById);
         SubmissionFileResponse submissionFileResponse = await _SubmissionFileService.SaveAsync(file,UploadedById,submissionId);
         return Created($"/api/submissions/{submissionId}/files",submissionFileResponse);
     }

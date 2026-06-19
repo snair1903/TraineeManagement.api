@@ -30,6 +30,7 @@ public class LocalFileStorageService : IFileStorageService
         byte[] hashBytes = sha256.ComputeHash(stream);
         string ext = Path.GetExtension(file.FileName).ToLowerInvariant();
         if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext)) throw new BadRequestException("Unallowed file type");
+        if(file.Length>(10*1024*1024)||file.Length==0) throw new RequestEntityTooLargeException("File size greater than 10mb or Empty");
         string checksum = BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
         stream.Position = 0;
         var metaData = new CreateSubmissionFileRequest
