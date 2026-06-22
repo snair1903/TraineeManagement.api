@@ -88,6 +88,11 @@ builder.Services.AddScoped<JwtService>();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionhandler>();
 
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    options.InstanceName = "TraineeManagementApp_"; // Prefix for Redis keys
+});
 
 var app = builder.Build();
 
