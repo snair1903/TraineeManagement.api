@@ -1,19 +1,16 @@
-
-using System.Runtime.Intrinsics.Arm;
 using System.Security.Cryptography;
-using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Asn1.Cms;
 using TraineeManagement.api.Data;
+using TraineeManagement.api.DTOs;
 using TraineeManagement.api.Exceptions;
 using TraineeManagement.api.Models;
 namespace TraineeManagement.api.Services;
 
 public class LocalFileStorageService : IFileStorageService
 {
-    private string[] permittedExtensions = { ".txt", ".pdf" };
+    // private string[] permittedExtensions = { ".txt", ".pdf" };
     private readonly string _storageDirectory;
     private readonly AppDbContext _SubmissionFileContext;
-    private long sizeLt =  10*1024*1024;
+    // private long sizeLt =  10*1024*1024;
 
     public LocalFileStorageService(IConfiguration configuration, AppDbContext context)
     {
@@ -23,20 +20,21 @@ public class LocalFileStorageService : IFileStorageService
         Directory.CreateDirectory(_storageDirectory);
     }
 
-    public async Task<SubmissionFileResponse> SaveAsync(IFormFile file, int UploadedById, int submissionId)
+    public async Task<SubmissionFileResponse> SaveAsync(CreateSubmissionFileRequest createSubmissionFileRequest, int UploadedById, int submissionId)
     {
          var Submission =await _SubmissionFileContext.Submissions.FindAsync(submissionId);
         if (Submission == null)
         {
             throw new NotFoundException("Submission not found at Id"+submissionId);
         }
+        IFormFile file = createSubmissionFileRequest.File;
         string fileId = Guid.NewGuid().ToString("N");
         using var sha256 = SHA256.Create();
         using var stream = file.OpenReadStream();
         byte[] hashBytes = sha256.ComputeHash(stream);
         string ext = Path.GetExtension(file.FileName).ToLowerInvariant();
-        if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext)) throw new UnsupportedMediaTypeException("Unallowed file type");
-        if(file.Length>sizeLt||file.Length==0) throw new RequestEntityTooLargeException("File size greater than 10mb or Empty");
+        // if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext)) throw new UnsupportedMediaTypeException("Unallowed file type");
+        // if(file.Length>sizeLt||file.Length==0) throw new RequestEntityTooLargeException("File size greater than 10mb or Empty");
         string checksum = BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
         stream.Position = 0;
         var metaData = new SubmissionFile

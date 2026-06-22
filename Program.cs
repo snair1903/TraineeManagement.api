@@ -27,6 +27,7 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseMySQL(
     connectionString
 ));
 
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
