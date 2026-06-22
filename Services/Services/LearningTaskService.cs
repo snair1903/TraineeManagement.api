@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using TraineeManagement.api.Data;
 using TraineeManagement.api.Exceptions;
 
-
 public class LearningTaskService : ILearningTaskService
 {
     private readonly AppDbContext _LearningTaskContext;
@@ -40,17 +39,16 @@ public class LearningTaskService : ILearningTaskService
 
 
     public async Task<LearningTaskResponse?> GetById(int Id)
+{
+    var LearningTask = await _LearningTaskContext.LearningTasks.FindAsync(Id);
+    if (LearningTask == null)
     {
-        var LearningTask = _LearningTaskContext.LearningTasks.FirstOrDefault(t => t.Id == Id);
-        if (LearningTask == null)
-        {
-            _logger.LogInformation("Get Failure: No user found at id{}",Id);
-            return null;
-        }
-        _logger.LogInformation("Get Success: user found at id {}",Id);
-        return new LearningTaskResponse(LearningTask);
+        _logger.LogInformation("Get Failure: No user found at id {Id}", Id);
+        return null;
     }
-
+    _logger.LogInformation("Get Success: user found at id {Id}", Id);
+    return new LearningTaskResponse(LearningTask);
+}
     public async Task<LearningTaskResponse> Create(CreateLearningTaskRequest LearningTask)
     {
 
