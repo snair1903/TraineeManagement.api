@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using System.Text.Json;
 using TraineeManagement.api.Data;
 using TraineeManagement.api.DTOs;
 using TraineeManagement.api.Exceptions;
@@ -9,15 +10,18 @@ public class LocalFileStorageService : IFileStorageService
 {
     // private string[] permittedExtensions = { ".txt", ".pdf" };
     private readonly string _storageDirectory;
+
+    private readonly IRabbitMqPublisher _publisher;
     private readonly AppDbContext _SubmissionFileContext;
     // private long sizeLt =  10*1024*1024;
 
-    public LocalFileStorageService(IConfiguration configuration, AppDbContext context)
+    public LocalFileStorageService(IConfiguration configuration, AppDbContext context,IRabbitMqPublisher publisher)
     {
         _SubmissionFileContext = context;
         var baseDirectory = configuration.GetSection("StorageRoot");
         _storageDirectory = Path.GetFullPath(baseDirectory["StoragePath"]!);
         Directory.CreateDirectory(_storageDirectory);
+        _publisher = publisher;
     }
 
     public async Task<SubmissionFileResponse> SaveAsync(CreateSubmissionFileRequest createSubmissionFileRequest, int UploadedById, int submissionId)
@@ -54,6 +58,19 @@ public class LocalFileStorageService : IFileStorageService
         fullpath = fullpath + ext;
         using var fileStream = new FileStream(fullpath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true);
         await stream.CopyToAsync(fileStream);
+        var msg = new SubmissionFileProcessingRequest
+        {
+            MessageId = Guid.NewGuid().ToString(),
+            SubmissionId = metaData.SubmissionId,
+            CorrelationId = Guid.NewGuid().ToString(),
+            FileId = metaData.Id,
+            ContractVersion = 1,
+            RequestedAt = DateTime.Now
+
+        };
+        var g = JsonSerializer.Serialize(msg);
+        await _publisher.PublishMessageAsync("submission-processing",g);
+        Console.Write("Message Published: Message Id",metaData.Id);
         return new SubmissionFileResponse(metaData);
 
     }
