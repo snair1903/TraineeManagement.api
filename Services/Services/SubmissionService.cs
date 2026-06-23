@@ -25,11 +25,11 @@ public class SubmissionService : ISubmissionService
 
     public async Task<SubmissionResponse> GetById(int Id)
     {
-        var Submission = _SubmissionContext.Submissions.FirstOrDefault(t => t.Id == Id);
+        var Submission = await _SubmissionContext.Submissions.FindAsync( Id);
         if (Submission == null)
         {
             _logger.LogInformation("Get Failure: No Submission found at id{}",Id);
-            throw new NotFoundException("Submission found at Id"+Id);
+            throw new NotFoundException("Submission not found at Id"+Id);
         }
         _logger.LogInformation("Get Success: Submissionment found at id {}",Id);
         return new SubmissionResponse(Submission);
@@ -37,7 +37,7 @@ public class SubmissionService : ISubmissionService
 
     public async Task<SubmissionResponse> Create(CreateSubmissionRequest Submission)
     {
-        if(await _SubmissionContext.TaskAssignments.FirstOrDefaultAsync(t => t.Id == Submission.TaskAssignmentId)==null){throw new NotFoundException("No Task Assignments Found with Id "+Submission.TaskAssignmentId);}
+        if(await _SubmissionContext.TaskAssignments.FindAsync(Submission.TaskAssignmentId)==null){throw new NotFoundException("No Task Assignments Found with Id "+Submission.TaskAssignmentId);}
         var nt = new Submission(Submission);
         _SubmissionContext.Submissions.Add(nt);
         await _SubmissionContext.SaveChangesAsync();

@@ -34,7 +34,7 @@ public class MentorService : IMentorService
             query = query.Where(t => t.Status.ToString() == userStatus.ToString());
         }
 
-        var data = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(t => new MentorResponse(t)).ToListAsync();
+        var data = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(t => new MentorResponse(t)).AsNoTracking().ToListAsync();
         _logger.LogInformation("Get Success");
         return new PagedResponse<MentorResponse>( data,pageNumber,pageSize, data.Count());
     }
