@@ -27,7 +27,7 @@ public class LearningTaskController : ControllerBase
     }
     [HttpGet("{Id:int}")]
 
-    public async Task<IActionResult> GetbyId(int Id)
+    public async Task<IActionResult> GetbyId([FromRoute]int Id)
     {
         LearningTaskResponse? LearningTaskResponse = await _LearningTaskService.GetById(Id);
             return LearningTaskResponse == null ? NotFound() : Ok(LearningTaskResponse);
