@@ -35,7 +35,7 @@ public class LocalFileStorageService : IFileStorageService
         string fileId = Guid.NewGuid().ToString("N");
         using var sha256 = SHA256.Create();
         using var stream = file.OpenReadStream();
-        byte[] hashBytes = sha256.ComputeHash(stream);
+        byte[] hashBytes = await sha256.ComputeHashAsync(stream);
         string ext = Path.GetExtension(file.FileName).ToLowerInvariant();
         // if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext)) throw new UnsupportedMediaTypeException("Unallowed file type");
         // if(file.Length>sizeLt||file.Length==0) throw new RequestEntityTooLargeException("File size greater than 10mb or Empty");
@@ -68,6 +68,14 @@ public class LocalFileStorageService : IFileStorageService
             RequestedAt = DateTime.Now
 
         };
+        var job = new ProcessingJob
+        {
+        Status = ProcessingJobStatus.QUEUED,
+        CorrelationId = msg.CorrelationId,
+        StartedTimestamp = DateTime.Now
+        };
+        await _SubmissionFileContext.ProcessingJobs.AddAsync(job);
+        await _SubmissionFileContext.SaveChangesAsync();
         var g = JsonSerializer.Serialize(msg);
         await _publisher.PublishMessageAsync("submission-processing",g);
         Console.Write("Message Published: Message Id",metaData.Id);
