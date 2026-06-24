@@ -16,6 +16,19 @@ services:
   #       condition: service_healthy # Wait for database health check before starting
 
 
+  rabbitmq:
+    image: docker-registry-002.zeuslearning.com/zeuslearning/rabbitmq
+    container_name: rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"   # AMQP protocol port for applications
+      - "15672:15672" # HTTP Management UI port
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
 
   redis:
     image: docker-registry-002.zeuslearning.com/zeuslearning/redis:latest
@@ -47,4 +60,6 @@ volumes:
   mysql_data:
 
   redis_data:
+
+  rabbitmq_data:
 

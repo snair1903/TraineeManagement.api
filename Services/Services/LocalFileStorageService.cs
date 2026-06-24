@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using System.Text.Json;
 using TraineeManagement.api.Data;
 using TraineeManagement.api.DTOs;
 using TraineeManagement.api.Exceptions;
@@ -9,15 +10,18 @@ public class LocalFileStorageService : IFileStorageService
 {
     // private string[] permittedExtensions = { ".txt", ".pdf" };
     private readonly string _storageDirectory;
+
+    private readonly IRabbitMqPublisher _publisher;
     private readonly AppDbContext _SubmissionFileContext;
     // private long sizeLt =  10*1024*1024;
 
-    public LocalFileStorageService(IConfiguration configuration, AppDbContext context)
+    public LocalFileStorageService(IConfiguration configuration, AppDbContext context,IRabbitMqPublisher publisher)
     {
         _SubmissionFileContext = context;
         var baseDirectory = configuration.GetSection("StorageRoot");
         _storageDirectory = Path.GetFullPath(baseDirectory["StoragePath"]!);
         Directory.CreateDirectory(_storageDirectory);
+        _publisher = publisher;
     }
 
     public async Task<SubmissionFileResponse> SaveAsync(CreateSubmissionFileRequest createSubmissionFileRequest, int UploadedById, int submissionId)
@@ -31,7 +35,7 @@ public class LocalFileStorageService : IFileStorageService
         string fileId = Guid.NewGuid().ToString("N");
         using var sha256 = SHA256.Create();
         using var stream = file.OpenReadStream();
-        byte[] hashBytes = sha256.ComputeHash(stream);
+        byte[] hashBytes = await sha256.ComputeHashAsync(stream);
         string ext = Path.GetExtension(file.FileName).ToLowerInvariant();
         // if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext)) throw new UnsupportedMediaTypeException("Unallowed file type");
         // if(file.Length>sizeLt||file.Length==0) throw new RequestEntityTooLargeException("File size greater than 10mb or Empty");
@@ -54,6 +58,27 @@ public class LocalFileStorageService : IFileStorageService
         fullpath = fullpath + ext;
         using var fileStream = new FileStream(fullpath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true);
         await stream.CopyToAsync(fileStream);
+        var msg = new SubmissionFileProcessingRequest
+        {
+            MessageId = Guid.NewGuid().ToString(),
+            SubmissionId = metaData.SubmissionId,
+            CorrelationId = Guid.NewGuid().ToString(),
+            FileId = metaData.Id,
+            ContractVersion = 1,
+            RequestedAt = DateTime.Now
+
+        };
+        var job = new ProcessingJob
+        {
+        Status = ProcessingJobStatus.QUEUED,
+        CorrelationId = msg.CorrelationId,
+        StartedTimestamp = DateTime.Now
+        };
+        await _SubmissionFileContext.ProcessingJobs.AddAsync(job);
+        await _SubmissionFileContext.SaveChangesAsync();
+        var g = JsonSerializer.Serialize(msg);
+        await _publisher.PublishMessageAsync("submission-processing",g);
+        Console.Write("Message Published: Message Id",metaData.Id);
         return new SubmissionFileResponse(metaData);
 
     }

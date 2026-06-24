@@ -7,6 +7,7 @@ using Microsoft.OpenApi;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using RabbitMQ.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,7 @@ builder.Services.AddScoped<ITaskAssignService, TaskAssignService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ISubmissionService, SubmissionService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<IProcessingJobService, ProcessingJobService>();
 builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseMySQL(
     connectionString
@@ -65,6 +67,17 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+var factory = new ConnectionFactory
+{
+    HostName = builder.Configuration["RabbitMQ:HostName"]!,
+    UserName = builder.Configuration["RabbitMQ:UserName"]!,
+    Password = builder.Configuration["RabbitMQ:Password"]!
+};
+
+var connection = await factory.CreateConnectionAsync();
+
+builder.Services.AddSingleton(connection);
+builder.Services.AddSingleton<IRabbitMqPublisher, RabbitMqPublisher>();
 
 builder.Services.AddCors(options =>
     {
