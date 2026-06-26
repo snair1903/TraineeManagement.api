@@ -1,12 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
 namespace TraineeManagement.api.Controllers;
 
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using HealthChecks.UI.Client;
+
 [ApiController]
 [Route("/api/health")]
 public class HealthCheckController : ControllerBase
 {
-    
-    [HttpGet(Name = "GetHealth")]
+    private readonly HealthCheckService _healthCheckService;
+
+    public HealthCheckController(HealthCheckService healthCheckService)
+    {
+        _healthCheckService = healthCheckService;
+    }
+
+    [HttpGet("ready")]
     public IActionResult Get()
     {
         var res = new
@@ -17,5 +26,19 @@ public class HealthCheckController : ControllerBase
         };
 
         return Ok(res);
+
+    }
+
+
+    [HttpGet]
+    public async Task GetAsync()
+    {
+        var report = await _healthCheckService.CheckHealthAsync();
+
+        Response.StatusCode = report.Status == HealthStatus.Healthy
+            ? StatusCodes.Status200OK
+            : StatusCodes.Status503ServiceUnavailable;
+
+        await UIResponseWriter.WriteHealthCheckUIResponse(HttpContext, report);
     }
 }

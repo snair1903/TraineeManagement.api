@@ -9,6 +9,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using RabbitMQ.Client;
 using Serilog;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.Console().CreateLogger();
@@ -69,6 +71,10 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+var mysqlConn = builder.Configuration.GetConnectionString("DefaultConnection")!;
+var redisConn = builder.Configuration.GetConnectionString("Redis")!;
+
+
 var factory = new ConnectionFactory
 {
     HostName = builder.Configuration["RabbitMQ:HostName"]!,
@@ -76,6 +82,10 @@ var factory = new ConnectionFactory
     Password = builder.Configuration["RabbitMQ:Password"]!
 };
 
+builder.Services.AddHealthChecks()
+    .AddMySql(mysqlConn, name: "MySQL", tags: ["database", "critical"])
+    .AddRabbitMQ(name: "RabbitMQ", tags: ["message-broker", "critical"])
+    .AddRedis(redisConn, name: "Redis", tags: ["cache", "ready"]);
 var connection = await factory.CreateConnectionAsync();
 
 builder.Services.AddSingleton(connection);
