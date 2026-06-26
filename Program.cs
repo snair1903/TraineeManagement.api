@@ -8,9 +8,11 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using RabbitMQ.Client;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-
+Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.Console().CreateLogger();
+builder.Services.AddSerilog();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
 ?? throw new InvalidOperationException("connection string not found");
 
@@ -90,12 +92,9 @@ builder.Services.AddCors(options =>
 
 
 
-builder.Services.AddLogging(logging =>
-{
-    logging.ClearProviders();
-    logging.AddConsole(); 
-    logging.SetMinimumLevel(LogLevel.Trace);
-});
+
+
+
 builder.Services.AddScoped<JwtService>();
 
 builder.Services.AddProblemDetails();
