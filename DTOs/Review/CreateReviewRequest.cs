@@ -7,18 +7,18 @@ using TraineeManagement.api.Models;
 
 public class CreateReviewRequest
 {
-    [Required(ErrorMessage = "SubmissionId is Required")]
+    [Required]
     public int SubmissionId { get; set; }
 
-    [Required(ErrorMessage = "MentorId is Required")]
+    [Required]
     public int MentorId { get; set; }
 
-    [Required(ErrorMessage = "Feedback is Required")]
-    public string Feedback { get; set; } = "";
+    [Required]
+    public string Feedback { get; set; } = string.Empty;
 
     public int Score { get; set; }
 
     public DateTime SubmissionDate { get; set; } = DateTime.Now;
-    [Required(ErrorMessage = "SubmissionId is Required")]
+    [Required]
     public ReviewStatus Status { get; set; }
 }

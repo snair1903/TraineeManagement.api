@@ -8,9 +8,9 @@ namespace TraineeManagement.api.Models
 
         public int TaskAssignmentId { get; set; }
 
-        public string SubmissionUrl { get; set; } = "";
+        public string SubmissionUrl { get; set; } = string.Empty;
 
-        public string Notes { get; set; } = "";
+        public string Notes { get; set; } = string.Empty;
 
         public DateTime SubmissionDate { get; set; } 
         public SubmissionStatus Status { get; set; }

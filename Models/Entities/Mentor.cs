@@ -7,20 +7,19 @@ using TraineeManagement.api.DTOs;
 public class Mentor
 {
     public int Id { get; set; }
-    [Required(ErrorMessage = "FirstName is required.")]
-    [StringLength(50, ErrorMessage = "FirstName cannot exceed 50 characters.")]
-    public string FirstName { get; set; } = "";
-    [Required(ErrorMessage = "LastName is required.")]
-    [StringLength(50, ErrorMessage = "LastName cannot exceed 50 characters.")]
-    public string LastName { get; set; } = "";
+    [Required]
+    [MaxLength(50)]
+    public string FirstName { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "Email is required.")]
-    [EmailAddress(ErrorMessage = "Valid email is required")]
-    public string Email { get; set; } = "";
+    [MaxLength(50)]
+    public string LastName { get; set; } = string.Empty;
+
     [Required]
-    public string Expertise { get; set; } = "";
+    [EmailAddress]
+    public string Email { get; set; } = string.Empty;
     [Required]
-    [EnumDataType(typeof(MentorStatus), ErrorMessage = "Invalid Mentor status.")]
+    public string Expertise { get; set; } = string.Empty;
+    [Required]
     public MentorStatus Status { get; set; }
     public DateTime CreatedDate { get; set; } = DateTime.Now;
     public DateTime UpdatedDate { get; set; } = DateTime.Now;

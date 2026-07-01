@@ -21,37 +21,18 @@ public class TraineeController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] string? search, TraineeStatus? userStatus, int pageNumber = 1, int pageSize = 10)
     {
-        try
-        {
-            var res = await _traineeService.GetAll(pageNumber, pageSize, search, userStatus);
-            return Ok(res);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new
-            {
-                error = "Internal Server Error",
-                details = ex.Message
-            });
-        }
+
+        var res = await _traineeService.GetAll(pageNumber, pageSize, search, userStatus);
+        return Ok(res);
+
     }
     [HttpGet("{Id:int}")]
 
     public async Task<IActionResult> GetbyId(int Id)
     {
-        try
-        {
-            TraineeResponse? traineeResponse = await _traineeService.GetById(Id);
-            return traineeResponse == null ? NotFound() : Ok(traineeResponse);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new
-            {
-                error = "Internal Server Error",
-                details = ex.Message
-            });
-        }
+        TraineeResponse? traineeResponse = await _traineeService.GetById(Id);
+        return traineeResponse == null ? NotFound() : Ok(traineeResponse);
+
     }
 
     [HttpPost]

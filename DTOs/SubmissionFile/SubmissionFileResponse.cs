@@ -1,13 +1,13 @@
 namespace TraineeManagement.api.Models;
 public class SubmissionFileResponse
 {
-    public string OriginalFileName {get;set;} = "";
+    public string OriginalFileName {get;set;} = string.Empty;
 
-    // public string FileStorageName {get;set;} = "";
+    // public string FileStorageName {get;set;} = string.Empty;
 
     public long Size{get;set;}
 
-    public string ContentType{get;set;} = "";
+    public string ContentType{get;set;} = string.Empty;
 
     public string Checksum {get;set;} = string.Empty;
 

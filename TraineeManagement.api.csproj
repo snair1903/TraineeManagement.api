@@ -4,6 +4,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <ContainerBaseImage>docker-registry-002.zeuslearning.com/zeuslearning/dotnet/sdk:10.0-alpine</ContainerBaseImage>
   </PropertyGroup>
 
   <ItemGroup>

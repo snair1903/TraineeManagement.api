@@ -7,17 +7,17 @@ using TraineeManagement.api.Models;
 
 public class CreateTaskAssignRequest
 {
-    [Required(ErrorMessage ="Trainee Id is required")]
+    [Required]
     public int TraineeId { get; set; }
-    [Required(ErrorMessage ="Trainee Id is required")]
+    [Required]
     public int MentorId { get; set; }
-    [Required(ErrorMessage ="Mentor Id is required")]
+    [Required]
     public int LearningTaskId  { get; set; }
-    [Required(ErrorMessage ="Assign Date is required")]
+    [Required]
     public DateTime AssignedDate { get; set; } 
-    [Required(ErrorMessage ="Due Date is required")]
+    [Required]
     public DateTime DueDate { get; set; }
-    [Required(ErrorMessage ="Status is required")]
+    [Required]
     public TaskAssignStatus Status { get; set; }
-    public string Remarks {get;set;} = "";
+    public string Remarks {get;set;} = string.Empty;
 }

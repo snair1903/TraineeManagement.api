@@ -8,23 +8,23 @@ public class ProcessingJobResponse
 
     public ProcessingJobStatus Status {get;set;}
 
-    public string Error{get;set;} = "";
+    public int Attempts{get;set;}
     
-    public string Summary{get;set;} = "";
+    public string ErrorSummary{get;set;} = string.Empty;
 
     public DateTime StartedTimestamp{get;set;}
 
     public DateTime CompletedTimestamp{get;set;} 
 
-    public string CorrelationId{get;set;} = "";
+    public string CorrelationId{get;set;} = string.Empty;
 
 
     public ProcessingJobResponse(ProcessingJob processingJob)
     {
         Id = processingJob.Id;
         Status =processingJob.Status;
-        Error = processingJob.Error;
-        Summary = processingJob.Summary;
+        Attempts = processingJob.Attempts;
+        ErrorSummary = processingJob.ErrorSummary;
         StartedTimestamp = processingJob.StartedTimestamp;
         CompletedTimestamp = processingJob.CompletedTimestamp;
         CorrelationId = processingJob.CorrelationId;

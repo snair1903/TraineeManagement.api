@@ -51,7 +51,10 @@ public class LearningTaskService : ILearningTaskService
 }
     public async Task<LearningTaskResponse> Create(CreateLearningTaskRequest LearningTask)
     {
-
+        if (LearningTask.DueDate < DateTime.Now)
+        {
+            throw new BadRequestException("DueDate must be Greater than current Date");
+        }
         var nt = new LearningTask(LearningTask);
         _LearningTaskContext.LearningTasks.Add(nt);
         await _LearningTaskContext.SaveChangesAsync();
@@ -61,6 +64,10 @@ public class LearningTaskService : ILearningTaskService
 
     public async Task<LearningTaskResponse?> Update(int Id, UpdateLearningTaskRequest updateLearningTaskRequest)
     {
+        if (updateLearningTaskRequest.DueDate < DateTime.Now)
+        {
+            throw new BadRequestException("DueDate must be Greater than current Date");
+        }
         var LearningTask = _LearningTaskContext.LearningTasks.FirstOrDefault(t => t.Id == Id);
         if (LearningTask == null)
         {

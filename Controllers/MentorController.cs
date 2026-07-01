@@ -22,37 +22,20 @@ public class MentorController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] string? search, MentorStatus? userStatus, int pageNumber = 1, int pageSize = 10)
     {
-        try
-        {
-            var res = await _MentorService.GetAll(pageNumber, pageSize, search, userStatus);
-            return Ok(res);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new
-            {
-                error = "Internal Server Error",
-                details = ex.Message
-            });
-        }
+
+        var res = await _MentorService.GetAll(pageNumber, pageSize, search, userStatus);
+        return Ok(res);
+
     }
     [HttpGet("{Id:int}")]
 
     public async Task<IActionResult> GetbyId(int Id)
     {
-        try
-        {
-            MentorResponse? MentorResponse = await _MentorService.GetById(Id);
-            return MentorResponse == null ? NotFound() : Ok(MentorResponse);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new
-            {
-                error = "Internal Server Error",
-                details = ex.Message
-            });
-        }
+
+        MentorResponse? MentorResponse = await _MentorService.GetById(Id);
+        return MentorResponse == null ? NotFound() : Ok(MentorResponse);
+
+
     }
 
     [HttpPost]
@@ -65,19 +48,10 @@ public class MentorController : ControllerBase
 
     public async Task<IActionResult> Update(int Id, UpdateMentorRequest updateMentorRequest)
     {
-        try
-        {
-            MentorResponse? MentorResponse = await _MentorService.Update(Id, updateMentorRequest);
-            return Ok(MentorResponse);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new
-            {
-                error = "Internal Server Error",
-                details = ex.Message
-            });
-        }
+
+        MentorResponse? MentorResponse = await _MentorService.Update(Id, updateMentorRequest);
+        return Ok(MentorResponse);
+
 
     }
     [HttpDelete("{Id:int}")]
