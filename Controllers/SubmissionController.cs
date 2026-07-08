@@ -52,7 +52,7 @@ public class SubmissionController : ControllerBase
 
         int UploadedById = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         SubmissionFileResponse submissionFileResponse = await _SubmissionFileService.SaveAsync(createSubmissionFileRequest, UploadedById, submissionId);
-        return Created($"/api/submissions/{submissionId}/files", submissionFileResponse);
+        return Accepted($"/api/submissions/{submissionId}/files", submissionFileResponse);
     }
 
 
