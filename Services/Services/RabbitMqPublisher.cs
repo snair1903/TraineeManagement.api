@@ -8,7 +8,6 @@ public class RabbitMqPublisher : IRabbitMqPublisher
 {
     private readonly IConnection _connection;
 
-    // The connection is injected here from Program.cs
     public RabbitMqPublisher(IConnection connection)
     {
         _connection = connection;
@@ -19,29 +18,36 @@ public class RabbitMqPublisher : IRabbitMqPublisher
         // 1. Create a lightweight, short-lived channel
         using var channel = await _connection.CreateChannelAsync();
 
-        // 2. Declare the DURABLE queue
+        // 2. Define the DLQ arguments required to match the consumer's configuration
+        var queueArguments = new Dictionary<string, object?>
+        {
+            { "x-dead-letter-exchange", "submission-processing-dlx" },
+            { "x-dead-letter-routing-key", "submission-processing" }
+        };
+
+        // 3. Declare the DURABLE queue ONLY ONCE with matching arguments
         await channel.QueueDeclareAsync(
-            queue: queueName, 
-            durable: true,          // <-- Queue survives restarts
-            exclusive: false, 
-            autoDelete: false, 
-            arguments: null
+            queue: queueName, // Dynamically uses "submission-processing" passed from your controller
+            durable: true,
+            exclusive: false,
+            autoDelete: false,
+            arguments: queueArguments // <-- Injected correctly 
         );
 
         var body = Encoding.UTF8.GetBytes(message);
 
-        // 3. Define the PERSISTENT properties
+        // 4. Define the PERSISTENT properties so messages survive broker crashes
         var properties = new BasicProperties
         {
-            DeliveryMode = DeliveryModes.Persistent // <-- Message survives restarts
+            DeliveryMode = DeliveryModes.Persistent 
         };
 
-        // 4. Publish to the queue
+        // 5. Publish to the queue
         await channel.BasicPublishAsync(
-            exchange: string.Empty, 
-            routingKey: queueName, 
+            exchange: string.Empty,
+            routingKey: queueName,
             mandatory: true,
-            basicProperties: properties, 
+            basicProperties: properties,
             body: body
         );
     }
