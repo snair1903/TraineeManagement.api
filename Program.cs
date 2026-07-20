@@ -8,9 +8,13 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using RabbitMQ.Client;
+using Serilog;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
-
+Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.Console().CreateLogger();
+builder.Services.AddSerilog();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
 ?? throw new InvalidOperationException("connection string not found");
 
@@ -67,6 +71,10 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+var mysqlConn = builder.Configuration.GetConnectionString("DefaultConnection")!;
+var redisConn = builder.Configuration.GetConnectionString("Redis")!;
+
+
 var factory = new ConnectionFactory
 {
     HostName = builder.Configuration["RabbitMQ:HostName"]!,
@@ -74,6 +82,10 @@ var factory = new ConnectionFactory
     Password = builder.Configuration["RabbitMQ:Password"]!
 };
 
+builder.Services.AddHealthChecks()
+    .AddMySql(mysqlConn, name: "MySQL", tags: ["database", "critical"])
+    .AddRabbitMQ(name: "RabbitMQ", tags: ["message-broker", "critical"])
+    .AddRedis(redisConn, name: "Redis", tags: ["cache", "ready"]);
 var connection = await factory.CreateConnectionAsync();
 
 builder.Services.AddSingleton(connection);
@@ -82,7 +94,7 @@ builder.Services.AddSingleton<IRabbitMqPublisher, RabbitMqPublisher>();
 builder.Services.AddCors(options =>
     {
         options.AddPolicy("MyAllowSpecificOrigins",
-            builder => builder.WithOrigins("http://localhost:3000", "http://localhost:5173/")
+            builder => builder.WithOrigins("http://localhost:3000", "http://localhost:5173/","http://localhost:5000")
                               .AllowAnyMethod()
                               .AllowAnyHeader());
     });
@@ -90,12 +102,9 @@ builder.Services.AddCors(options =>
 
 
 
-builder.Services.AddLogging(logging =>
-{
-    logging.ClearProviders();
-    logging.AddConsole(); 
-    logging.SetMinimumLevel(LogLevel.Trace);
-});
+
+
+
 builder.Services.AddScoped<JwtService>();
 
 builder.Services.AddProblemDetails();

@@ -10,6 +10,7 @@ using NLog.LayoutRenderers;
 
 public class TraineeService : ITraineeService
 {
+    private bool _redisAvailable = true;
     private readonly AppDbContext _traineeContext;
 
     private readonly ILogger<TraineeService> _logger;
@@ -41,15 +42,24 @@ public class TraineeService : ITraineeService
 
         var data = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(t => new TraineeResponse(t)).AsNoTracking().ToListAsync();
         _logger.LogInformation("Get Success");
-        return new PagedResponse<TraineeResponse>(data, pageNumber, pageSize, data.Count());
+        return new PagedResponse<TraineeResponse>(data, pageNumber, pageSize, query.Count());
     }
 
 
     public async Task<TraineeResponse?> GetById(int Id)
     {
+        
         string cacheKey = $"Trainee_{Id}";
-        string? cachedData = await _cache.GetStringAsync(cacheKey);
-
+        string? cachedData = null;
+            try
+        {
+            cachedData = await _cache.GetStringAsync(cacheKey);
+            _redisAvailable = true;
+        }
+        catch
+        {
+            _redisAvailable = false;
+        }
         // Console.WriteLine("{0}", cachedData);
 
         if (cachedData != null)
@@ -75,7 +85,11 @@ public class TraineeService : ITraineeService
             SlidingExpiration = TimeSpan.FromMinutes(5)
         };
 
-        await _cache.SetStringAsync(cacheKey, serialized, cacheOptions);
+        
+        if(_redisAvailable)
+        {
+            await _cache.SetStringAsync(cacheKey, serialized, cacheOptions);
+        }
         return res;
     }
 
@@ -83,7 +97,7 @@ public class TraineeService : ITraineeService
     {
 
         var nt = new Trainee(trainee);
-        
+
         _traineeContext.Trainees.Add(nt);
         await _traineeContext.SaveChangesAsync();
         _logger.LogInformation("Create Success: Trainee id {}", nt.Id);

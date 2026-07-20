@@ -1,34 +1,33 @@
-
 services:
-  # The .NET Web API Service
-  # webapi:
-  #   image: mysolution-webapi
-  #   build:
-  #     context: .
-  #     dockerfile: MyWebApi/Dockerfile
-  #   ports:
-  #     - "5000:8080" # Maps localhost:5000 to container port 8080
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=Development
-  #     - ConnectionStrings__DefaultConnection=Host=database;Port=5432;Database=mydb;Username=postgres;Password=mysecretpassword
-  #   depends_on:
-  #     database:
-  #       condition: service_healthy # Wait for database health check before starting
 
+  webapi:
+    image: trainee-management-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "7058:7058"
+    env_file:
+      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - database
+      - rabbitmq
+      - redis
 
   rabbitmq:
     image: docker-registry-002.zeuslearning.com/zeuslearning/rabbitmq
     container_name: rabbitmq
     restart: unless-stopped
     ports:
-      - "5672:5672"   # AMQP protocol port for applications
-      - "15672:15672" # HTTP Management UI port
+      - "5672:5672"   
+      - "15672:15672" 
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
-
 
   redis:
     image: docker-registry-002.zeuslearning.com/zeuslearning/redis:latest
@@ -39,9 +38,7 @@ services:
     command: redis-server --requirepass ${REDIS_PASSWORD} 
     volumes:
       - redis_data:/data
-    
 
-  # Database Dependency Service
   database:
     image: docker-registry-002.zeuslearning.com/zeuslearning/mysql:latest
     container_name: mysql_server
@@ -58,8 +55,5 @@ services:
 
 volumes:
   mysql_data:
-
   redis_data:
-
   rabbitmq_data:
-

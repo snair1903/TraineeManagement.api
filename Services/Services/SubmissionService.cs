@@ -10,7 +10,7 @@ using System.Text.Json;
 public class SubmissionService : ISubmissionService
 {
     private readonly AppDbContext _SubmissionContext;
-
+    private bool _redisAvailable = true;
     private readonly IDistributedCache _cache;
 
     private readonly ILogger<SubmissionService> _logger;
@@ -23,14 +23,24 @@ public class SubmissionService : ISubmissionService
 
     public async Task<List<SubmissionResponse>> GetAll()
     {
-        return await _SubmissionContext.Submissions.Select(t => new SubmissionResponse(t)).AsNoTracking().ToListAsync();
+        return await _SubmissionContext.Submissions.Select(t => new SubmissionResponse(t)).ToListAsync();
     }
 
 
     public async Task<SubmissionResponse> GetById(int Id)
     {
         string cacheKey = $"Submission_{Id}";
-        string? cachedData = await _cache.GetStringAsync(cacheKey);
+        string? cachedData = null;
+
+        try
+        {
+            cachedData = await _cache.GetStringAsync(cacheKey);
+            _redisAvailable = true;
+        }
+        catch
+        {
+            _redisAvailable = false;
+        }
 
         // Console.WriteLine("{0}", cachedData);
 
@@ -57,7 +67,10 @@ public class SubmissionService : ISubmissionService
             SlidingExpiration = TimeSpan.FromMinutes(5)
         };
 
-        await _cache.SetStringAsync(cacheKey, serialized, cacheOptions);
+        if(_redisAvailable)
+        {
+            await _cache.SetStringAsync(cacheKey, serialized, cacheOptions);
+        }
         return res;
     }
 

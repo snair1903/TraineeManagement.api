@@ -1,5 +1,6 @@
 
 namespace TraineeManagement.api.Models;
+using System.ComponentModel.DataAnnotations;
 using TraineeManagement.api.DTOs;
 
 
@@ -7,11 +8,12 @@ public class LearningTask
 {
     public int Id { get; set; }
 
-    public string Title { get; set; } = "";
-    
-    public string Description { get; set; } = "";
-
-    public string ExpectedTechStack { get; set; } = "";
+    [MaxLength(50)]
+    public string Title { get; set; } = string.Empty;
+    [MaxLength(200)]
+    public string Description { get; set; } = string.Empty;
+    [MaxLength(50)]
+    public string ExpectedTechStack { get; set; } = string.Empty;
    
     public LearnStatus  Status { get; set; }
     public DateTime DueDate { get; set; } = DateTime.Now;

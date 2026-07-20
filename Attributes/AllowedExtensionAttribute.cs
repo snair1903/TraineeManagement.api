@@ -12,7 +12,7 @@ public class AllowedExtensionsAttribute : ValidationAttribute
         _extensions = extensions.Select(x => x.ToLowerInvariant()).ToArray();
     }
 
-    protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+    protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
     {
         if (value is IFormFile file)
         {
@@ -23,6 +23,6 @@ public class AllowedExtensionsAttribute : ValidationAttribute
             }
         }
 
-        return ValidationResult.Success;
+        return ValidationResult.Success!;
     }
 }

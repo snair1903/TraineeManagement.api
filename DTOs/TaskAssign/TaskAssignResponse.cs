@@ -13,7 +13,7 @@ public class TaskAssignResponse
     public DateTime AssignedDate { get; set; } 
     public DateTime DueDate { get; set; }
     public TaskAssignStatus Status { get; set; }
-    public string Remarks {get;set;} = "";
+    public string Remarks {get;set;} = string.Empty;
 
 
     public TaskAssignResponse(TaskAssignment taskAssignment)

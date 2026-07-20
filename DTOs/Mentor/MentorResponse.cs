@@ -9,16 +9,16 @@ public class MentorResponse
      public int Id { get; set; }
     [Required(ErrorMessage = "FirstName is required.")]
     [StringLength(50, ErrorMessage = "FirstName cannot exceed 50 characters.")]
-    public string FirstName { get; set; } = "";
+    public string FirstName { get; set; } = string.Empty;
     [Required(ErrorMessage = "LastName is required.")]
     [StringLength(50, ErrorMessage = "LastName cannot exceed 50 characters.")]
-    public string LastName { get; set; } = "";
+    public string LastName { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Email is required.")]
     [EmailAddress(ErrorMessage = "Valid email is required")]
-    public string Email { get; set; } = "";
+    public string Email { get; set; } = string.Empty;
     [Required]
-    public string Expertise { get; set; } = "";
+    public string Expertise { get; set; } = string.Empty;
    
     // [AllowedValues(["Active", "InActive", "Complete"], ErrorMessage = "Must be valid Status")]
     public MentorStatus Status { get; set; } 

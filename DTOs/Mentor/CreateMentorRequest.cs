@@ -7,18 +7,18 @@ using TraineeManagement.api.Models;
 
 public class CreateMentorRequest
 { 
-    [Required(ErrorMessage = "FirstName is required.")]
-    [StringLength(50, ErrorMessage = "FirstName cannot exceed 50 characters.")]
-    public string FirstName { get; set; } = "";
-    [Required(ErrorMessage = "LastName is required.")]
-    [StringLength(50, ErrorMessage = "LastName cannot exceed 50 characters.")]
-    public string LastName { get; set; } = "";
-
-    [Required(ErrorMessage = "Email is required.")]
-    [EmailAddress(ErrorMessage = "Valid email is required")]
-    public string Email { get; set; } = "";
     [Required]
-    public string Expertise { get; set; } = "";
+    [StringLength(50)]
+    public string FirstName { get; set; } = string.Empty;
+    [Required]
+    [StringLength(50)]
+    public string LastName { get; set; } = string.Empty;
+
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; } = string.Empty;
+    [Required]
+    public string Expertise { get; set; } = string.Empty;
     
     public MentorStatus Status { get; set; } 
 }
