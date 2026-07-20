@@ -42,7 +42,7 @@ public class TraineeService : ITraineeService
 
         var data = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(t => new TraineeResponse(t)).AsNoTracking().ToListAsync();
         _logger.LogInformation("Get Success");
-        return new PagedResponse<TraineeResponse>(data, pageNumber, pageSize, data.Count());
+        return new PagedResponse<TraineeResponse>(data, pageNumber, pageSize, query.Count());
     }
 
 
