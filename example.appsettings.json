@@ -1,0 +1,29 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "DefaultConnection":
+    "yourConnectionString",
+    "Redis": "redisConnectionString"
+
+  },
+  "JwtSettings": {
+    "Key": "yourKey",
+    "Issuer": "TraineeManagementApi",
+    "Audience": "TraineeManagementClient",
+    "ExpiryMinutes": 60
+  },
+  "StorageRoot":{
+    "StoragePath":"docs"
+  },
+  "RabbitMQ":{
+    "UserName":"userName",
+    "Password":"password",
+    "HostName":"hostname"
+  }
+}
